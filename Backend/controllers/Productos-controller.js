@@ -1,6 +1,6 @@
 /*Controladores de productos (CREAR, ACTUALIZAR, ELIMINAR) */
 const Producto = require("../models/Producto");
-const cloudinary = require("/Backend/utils/Cloudinary");
+const cloudinary = require("../utils/Cloudinary");
 //const cloudinary = require("../utils/cloudinary");
 
 // 1. Crear producto

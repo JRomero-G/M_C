@@ -302,7 +302,7 @@ class AuthMiddleware {
     // ========== CORS CONFIGURABLE ==========
     static cors(opciones = {}) {
         const defaults = {
-            origin: process.env.CORS_ORIGIN,
+            origin: process.env.CORS_ORIGIN || '*',
             methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
             allowedHeaders: ['Content-Type', 'Authorization'],
             credentials: true,

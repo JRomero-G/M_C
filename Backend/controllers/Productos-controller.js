@@ -412,7 +412,7 @@ exports.subirImagen = async (req, res) => {
     }
 
     const resultado = await cloudinary.uploader.upload(archivo.tempFilePath, {
-      folder: "venta_muebles/productos",
+      folder: process.env.CLOUDINARY_FOLDER,
       upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
     });
 

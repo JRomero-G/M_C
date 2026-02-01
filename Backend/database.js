@@ -2,8 +2,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const uri = process.env.MONGO_URI || 
-    "mongodb+srv://jromero_db:PruebasDeDesarrollo@cluster0.uayzubg.mongodb.net/test?retryWrites=true&w=majority";
+const uri = process.env.MONGO_URI;
     
     //BASE DE DATOS TEST
     //mongodb+srv://jromero_db:PruebasDeDesarrollo@cluster0.uayzubg.mongodb.net/test?retryWrites=true&w=majority

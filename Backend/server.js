@@ -51,13 +51,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// Health check
-app.get("/health", (req, res) => {
-  res.json({
-    status: "healthy",
-    timestamp: new Date().toISOString()
-  });
-});
 
 // ========== MANEJO DE ERRORES ==========
 // 404 - Ruta no encontrada
@@ -82,12 +75,5 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log("=".repeat(50));
   console.log(`🚀 Servidor en http://localhost:${PORT}`);
-  console.log(`📦 Productos: http://localhost:${PORT}/api/productos`);
-  console.log(`📦 Productos: http://localhost:${PORT}/api/productos/gestion`);
-  console.log(`📦 Productos: http://localhost:${PORT}/api/productos/catalogo`);
-  console.log(`👤 Usuarios: http://localhost:${PORT}/api/usuarios`);
-  console.log(`👤 Usuarios: http://localhost:${PORT}/api/usuarios/registro`);
-  console.log(`🛒 Pedidos: http://localhost:${PORT}/api/pedidos`);
-  console.log(`❤️  Health: http://localhost:${PORT}/health`);
   console.log("=".repeat(50));
 });

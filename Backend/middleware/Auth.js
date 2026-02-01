@@ -20,7 +20,7 @@ class AuthMiddleware {
             // Verificar token
             const decoded = jwt.verify(
                 token, 
-                process.env.JWT_SECRET || 'secret_key_desarrollo'
+                process.env.JWT_SECRET 
             );
             
             // Buscar usuario en la base de datos
@@ -302,7 +302,7 @@ class AuthMiddleware {
     // ========== CORS CONFIGURABLE ==========
     static cors(opciones = {}) {
         const defaults = {
-            origin: process.env.CORS_ORIGIN || '*',
+            origin: process.env.CORS_ORIGIN,
             methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
             allowedHeaders: ['Content-Type', 'Authorization'],
             credentials: true,

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro</title>
+    <link rel="stylesheet" href="../../Css/R_Usuarios.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Crear Usuario</h2>
+      <form action="#" id="signUpForm">
+        <!-- Campo de Usuario -->
+        <div class="input-group">
+          <label for="username">Usuario</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Elige un nombre de usuario"
+            pattern="^[a-zA-Z0-9_]+$"
+            minlength="3"
+            maxlength="25"
+            title="Su usuario no debe contener espacios y debe tener entre 3 y 25 caracteres"
+            autofocus
+            required
+          />
+        </div>
+
+        <!-- Campo de Correo Electrónico -->
+        <div class="input-group">
+          <label for="email">Correo electrónico</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="ejemplo@dominio.com"
+            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+            title="Por favor, ingrese un correo electrónico válido sin espacios"
+            required
+          />
+        </div>
+
+        
+        <!-- Campo de numero telefonico -->
+        <div class="input-group">
+          <label for="telefono">Numero Telefonico</label>
+          <input
+            type="tel"
+            id="telefono"
+            name="telefono"
+            placeholder="+504 3265-1568"
+             pattern="[0-9+\-()\s]+"
+            title="Por favor, ingrese un numero telefonico"
+            required
+          />
+        </div>
+
+        <!-- Campo de Contraseña -->
+        <div class="input-group">
+          <label for="password">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Elige una contraseña"
+            pattern="^(?!.*\s).+$"
+            minlength="8"
+            title="La contraseña no debe contener espacios"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <label for="confirm_password">Confirmar Contraseña</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="Confirma tu contraseña"
+            pattern="^(?!.*\s).+$"
+            minlength="8"
+            title="La contraseña no debe contener espacios"
+            required
+          />
+        </div>
+
+        <div id="contenedor-error"></div>
+
+        <button type="submit">Registrar</button>
+      </form>
+      <p>¿Ya tienes cuenta? <a href="Login.html">Inicia sesión</a></p>
+    </div>
+
+    <!--MASK DE TELEFONO-->
+        <script>
+        document.getElementById('telefono').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            // Aplicar máscara: (###) ###-####
+            if (value.length > 0) {
+                value = '+(504' + value;
+            }
+            if (value.length > 5) {
+                value = value.slice(0, 5) + ') ' + value.slice(5);
+            }
+            if (value.length > 11) {
+                value = value.slice(0, 11) + '-' + value.slice(11, 15);
+            }
+            
+            e.target.value = value;
+        });
+    </script>
+
+    <script>
+      const form = document.querySelector("#signUpForm");
+      const usernameInput = document.querySelector("#username");
+      const emailInput = document.querySelector("#email");
+      const passwordInput = document.querySelector("#password");
+      const confirmPasswordInput = document.querySelector("#confirmPassword");
+      const errorMessage = document.querySelector("#contenedor-error");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const username = usernameInput.value;
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        // Validaciones
+        const usernameRegex = /^[a-zA-Z0-9_]+$/; // Sin espacios, solo letras, números y guión bajo
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Email válido
+        const passwordRegex = /^(?!.*\s).+$/; // Contraseña sin espacios
+
+        if (!usernameRegex.test(username)) {
+          errorMessage.textContent =
+            "El usuario solo puede contener letras, números y guiones bajos, sin espacios.";
+          return;
+        }
+
+        if (!emailRegex.test(email)) {
+          errorMessage.textContent =
+            "Por favor, ingresa un correo electrónico válido.";
+          return;
+        }
+
+        if (!passwordRegex.test(password)) {
+          errorMessage.textContent =
+            "La contraseña no puede contener espacios.";
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          errorMessage.textContent = "Las contraseñas no coinciden.";
+          return;
+        }
+
+        const newUser = {
+          username: username,
+          email: email,
+          password: password,
+          rol: "lector", // Asignar por defecto el rol 'lector'
+        };
+
+        fetch("http://localhost:3000/signUp", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              errorMessage.textContent = "Usuario o Correo Ya registrado";
+            } else {
+              // Si el registro es exitoso, redirige a login o página principal
+              window.location.href = "\Login.html"; // Redirigir a login
+            }
+          })
+          .catch((err) => {
+            console.error("Error al registrar el usuario:", err);
+            errorMessage.textContent =
+              "Error al registrar el usuario. Usuario o Correo Ya registrados!!. Intenta nuevamente.";
+          });
+      });
+    </script>
+  </body>
+</html>

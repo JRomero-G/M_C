@@ -1,0 +1,252 @@
+:root {
+  /* Colores principales */
+  --color-primary: #4a6cf7;
+  --color-primary-hover: #3a5ce5;
+  --color-primary-gradient-start: #667eea;
+  --color-primary-gradient-end: #764ba2;
+  
+  /* Colores de texto */
+  --color-text-dark: #333;
+  --color-text-medium: #555;
+  --color-text-light: #666;
+  --color-text-white: white;
+  
+  /* Colores de UI */
+  --color-error: #e74c3c;
+  --color-border: #ddd;
+  --color-disabled: #cccccc;
+  --color-icon: #666;
+  
+  /* Espaciados */
+  --spacing-large: 40px;
+  --spacing-medium: 30px;
+  --spacing-regular: 20px;
+  --spacing-small: 10px;
+  --spacing-xsmall: 5px;
+  
+  /* Dimensiones */
+  --border-radius: 10px;
+  --border-radius-small: 5px;
+  --input-padding: 12px;
+  --input-icon-padding: 45px;
+  
+  /* Sombras */
+  --box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  
+  /* Tamaños de fuente */
+  --font-size-large: 16px;
+  --font-size-small: 14px;
+  
+  /* Animaciones */
+  --transition-speed: 0.3s;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, var(--color-primary-gradient-start) 0%, var(--color-primary-gradient-end) 100%);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-container {
+  background: var(--color-text-white);
+  padding: var(--spacing-large);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: var(--spacing-medium);
+}
+
+.login-header h1 {
+  color: var(--color-text-dark);
+  margin-bottom: var(--spacing-small);
+}
+
+.login-header p {
+  color: var(--color-text-light);
+  font-size: var(--font-size-small);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-regular);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-xsmall);
+  color: var(--color-text-medium);
+  font-weight: 500;
+}
+
+.input-with-icon {
+  display: flex;
+  position: relative;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-icon);
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding: var(--input-padding) var(--input-padding) var(--input-padding) var(--input-icon-padding);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-large);
+  transition: border-color var(--transition-speed);
+}
+
+/* Contraseña */
+.input-with-icon #password {
+  width: 90%;
+  margin-bottom: var(--spacing-regular);
+}
+
+.input-with-icon #mostrar {
+  width: 10%;
+  height: 20px;
+  margin-top: 13px;
+}
+
+.input-with-icon input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.btn-login {
+  width: 100%;
+  padding: var(--input-padding);
+  background: var(--color-primary);
+  color: var(--color-text-white);
+  border: none;
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-speed);
+}
+
+.btn-login:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn-login:disabled {
+  background: var(--color-disabled);
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: var(--color-error);
+  font-size: var(--font-size-small);
+  margin-top: var(--spacing-xsmall);
+  display: none;
+}
+
+.error-message.show {
+  display: block;
+}
+
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--color-text-white);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estilos mejorados para el botón mostrar contraseña */
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  color: var(--color-icon);
+  padding: 4px;
+  border-radius: 4px;
+  transition: all var(--transition-speed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 30px;
+  border: none;
+}
+
+
+.password-toggle:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+
+.password-toggle i#ojo-mostrar {
+  font-size: 18px;
+  left: 15%;
+}
+
+.password-toggle i#ojo-mostrar:hover {
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--color-primary);
+}
+
+/* Ajuste para el input de contraseña con botón */
+.input-with-icon #password {
+  width: 100%;
+  padding-right: 45px; /* Espacio para el botón */
+  margin-bottom: 0;
+}
+
+/* Clase para cuando la contraseña es visible */
+.password-visible {
+  color: var(--color-primary);
+}
+
+.login-footer {
+  margin-top: var(--spacing-small);
+  text-align: center;
+  align-content: center;
+  width: 100%;
+  height: 40px;
+}
+
+
+.login-footer #recuperar {
+  color: var(--color-primary);
+  text-decoration: none;
+  padding: 5px;
+  font-size: var(--font-size-large);
+}
+
+.login-footer #recuperar:hover {
+  border: solid;
+  border-radius: var(--border-radius);
+  background-color: var(--color-primary-hover);
+  color: var(--color-text-white);
+  cursor: pointer;
+}

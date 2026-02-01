@@ -1,0 +1,649 @@
+:root {
+    --azul-principal: #2c3e50;
+    --azul-secundario: #3498db;
+    --azul-claro: #5dade2;
+    --azul-hover:#114f79;
+    --azul-muy-claro: #ebf5fb;
+    --blanco: #ffffff;
+    --gris-claro: #f8f9fa;
+    --gris-medio: #e9ecef;
+    --gris-oscuro: #6c757d;
+    --verde: #2ecc71;
+    --rojo: #e74c3c;
+    --amarillo: #f1c40f;
+    --sombra: 0 8px 30px rgba(0, 0, 0, 0.12);
+    --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --radio: 12px;
+    --radio-sm: 8px;
+    --transicion: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: rgba(0, 0, 255, 0.107);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+    color: var(--azul-principal);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: black;
+    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+h1 i {
+    color: var(--azul-secundario);
+    font-size: 2.3rem;
+}
+
+.contenedor-factura {
+    width: 100%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 30px;
+    animation: aparecer 0.6s ease;
+}
+
+/* Formulario */
+.formulario {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+    padding: 40px;
+    border: 1px solid var(--azul-muy-claro);
+}
+
+.formulario h2 {
+    color: var(--azul-principal);
+    margin: 30px 0 20px 0;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--azul-muy-claro);
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.formulario h2:first-child {
+    margin-top: 0;
+}
+
+.formulario h2 i {
+    color: var(--azul-secundario);
+    font-size: 1.4rem;
+}
+
+/* Grupos de input */
+.grupo-input {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.grupo-input span {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--azul-principal);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.grupo-input span i {
+    color: red;
+    margin-bottom: 3px;
+    font-size: 0.75rem;
+}
+
+.grupo-input input {
+    width: 100%;
+    padding: 16px 20px;
+    border: 2px solid var(--gris-medio);
+    border-radius: var(--radio-sm);
+    font-size: 1rem;
+    transition: var(--transicion);
+    background: var(--blanco);
+    color: var(--azul-principal);
+    font-weight: 500;
+}
+
+.grupo-input input:focus {
+    outline: none;
+    border-color: var(--azul-secundario);
+    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+    transform: translateY(-2px);
+}
+
+.grupo-input input::placeholder {
+    color: var(--gris-oscuro);
+    opacity: 0.7;
+}
+
+.grupo-input input:invalid:not(:focus):not(:placeholder-shown) {
+    border-color: var(--rojo);
+    background: rgba(231, 76, 60, 0.05);
+}
+
+.grupo-input input:valid:not(:focus):not(:placeholder-shown) {
+    border-color: var(--verde);
+    background: rgba(46, 204, 113, 0.05);
+}
+
+/* Métodos de pago */
+.metodos-pago {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 2px solid var(--azul-muy-claro);
+}
+
+.metodos-pago h3 {
+    color: var(--azul-principal);
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.metodos-pago h3 i {
+    color: var(--azul-secundario);
+}
+
+.opciones-pago {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.opciones-pago span {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 25px;
+    background: var(--azul-muy-claro);
+    border: 2px solid var(--gris-medio);
+    border-radius: var(--radio-sm);
+    cursor: pointer;
+    transition: var(--transicion);
+    font-weight: 600;
+    color: var(--azul-principal);
+    position: relative;
+}
+
+.opciones-pago span:hover {
+    background: var(--blanco);
+    border-color: var(--azul-claro);
+    transform: translateY(-3px);
+    box-shadow: var(--sombra-suave);
+}
+
+.opciones-pago input[type="radio"] {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    accent-color: var(--azul-secundario);
+}
+
+.opciones-pago i {
+    color: var(--azul-secundario);
+    font-size: 1.3rem;
+    width: 24px;
+    text-align: center;
+}
+
+.opciones-pago label input:checked + i {
+    color: var(--blanco);
+}
+
+.opciones-pago label input:checked ~ span {
+    color: var(--azul-secundario);
+}
+
+/* Bloques de método de pago */
+.bloque-transferencia, .bloque-tarjeta {
+    background: var(--azul-muy-claro);
+    border-radius: var(--radio);
+    padding: 30px;
+    border: 1px solid var(--azul-claro);
+    animation: deslizarArriba 0.4s ease;
+    margin-top: 20px;
+}
+
+.bloque-transferencia h4, .bloque-tarjeta h4 {
+    color: var(--azul-principal);
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bloque-transferencia h4 i, .bloque-tarjeta h4 i {
+    color: var(--azul-secundario);
+}
+
+.bloque-transferencia p {
+    color: var(--azul-principal);
+    margin-bottom: 15px;
+    line-height: 1.6;
+    padding: 12px 15px;
+    background: var(--blanco);
+    border-radius: var(--radio-sm);
+    border-left: 4px solid var(--azul-secundario);
+}
+
+.bloque-transferencia p strong {
+    color: var(--azul-principal);
+    min-width: 120px;
+    display: inline-block;
+}
+
+/* Tarjetas aceptadas TEMPORAL HASTA TENER LA PASARELA DE PAGO*/
+.tarjetas-aceptadas {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 15px;
+    background: var(--blanco);
+    border-radius: var(--radio-sm);
+    justify-content: center;
+}
+
+.tarjetas-aceptadas i {
+    font-size: 2.2rem;
+    color: var(--gris-oscuro);
+    transition: var(--transicion);
+}
+
+.tarjetas-aceptadas i:hover {
+    color: var(--azul-secundario);
+    transform: translateY(-3px);
+}
+
+/* Botón confirmar */
+.btn-Accion {
+    width: 100%;
+    padding: 20px;
+    background-color: var(--azul-secundario);
+    color: var(--blanco);
+    border: none;
+    border-radius: var(--radio);
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transicion);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 40px;
+    letter-spacing: 0.5px;
+}
+
+.btn-Accion:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 10px 10px rgba(6, 170, 14, 0.6);
+    background-color: var(--azul-hover);
+}
+
+.btn-Accion:active {
+    transform: translateY(-1px);
+}
+
+.btn-Accion i {
+    font-size: 1.4rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-Accion:hover i {
+    transform: scale(1.2) rotate(5deg);
+}
+
+/*Boton Volver*/
+#btn-volver{
+margin-top: 20px;
+}
+
+#btn-volver:hover{
+     transform: translateY(-3px);
+    box-shadow: 0px 10px 10px rgba(170, 6, 6, 0.6);
+    background-color: var(--azul-hover);
+}
+
+#btn-volver:hover i{
+    transform: scale(1.2) rotate(0deg);
+}
+
+/* Resumen del pedido */
+.resumen {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+    padding: 30px;
+    border: 1px solid var(--azul-muy-claro);
+    height: fit-content;
+    position: sticky;
+    top: 30px;
+}
+
+.resumen h3 {
+    color: var(--azul-principal);
+    margin-bottom: 30px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--azul-muy-claro);
+}
+
+.resumen h3 i {
+    color: var(--azul-secundario);
+}
+
+.fila-resumen {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px dashed var(--gris-medio);
+    color: var(--azul-principal);
+    font-size: 1.05rem;
+}
+
+.fila-resumen:last-child {
+    border-bottom: none;
+}
+
+.fila-resumen.total {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--azul-principal);
+    padding-top: 25px;
+    margin-top: 15px;
+    border-top: 2px solid var(--azul-secundario);
+}
+
+.fila-resumen.total span:last-child {
+    color: var(--azul-secundario);
+}
+
+/* Indicadores visuales */
+.indicador-requerido::after {
+    content: " *";
+    color: var(--rojo);
+    font-weight: bold;
+}
+
+/* Efecto focus mejorado */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+}
+
+.grupo-input input:focus {
+    animation: pulse 1.5s infinite;
+}
+
+/* Animaciones */
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes deslizarArriba {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes latido {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Notificaciones */
+.notificacion {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    padding: 20px 25px;
+    border-radius: var(--radio);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 1000;
+    animation: deslizarDerecha 0.5s ease;
+    box-shadow: var(--sombra);
+    max-width: 400px;
+}
+
+.notificacion.exito {
+    background: linear-gradient(135deg, var(--verde) 0%, #27ae60 100%);
+    color: var(--blanco);
+}
+
+.notificacion.error {
+    background: linear-gradient(135deg, var(--rojo) 0%, #c0392b 100%);
+    color: var(--blanco);
+}
+
+.notificacion.info {
+    background: linear-gradient(135deg, var(--azul-secundario) 0%, #2980b9 100%);
+    color: var(--blanco);
+}
+
+@keyframes deslizarDerecha {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .contenedor-factura {
+        grid-template-columns: 1fr;
+        max-width: 800px;
+    }
+    
+    .resumen {
+        position: static;
+        order: -1;
+    }
+    
+    h1 {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 20px 15px;
+    }
+    
+    .formulario, .resumen {
+        padding: 30px 25px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .opciones-pago label {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px 20px;
+        gap: 12px;
+    }
+    
+    .bloque-transferencia, .bloque-tarjeta {
+        padding: 25px;
+    }
+    
+    .btn-confirmar {
+        padding: 18px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .formulario, .resumen {
+        padding: 25px 20px;
+    }
+    
+    .formulario h2 {
+        font-size: 1.4rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .grupo-input input {
+        padding: 14px 16px;
+    }
+    
+    .fila-resumen {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        padding: 15px 0;
+    }
+    
+    .fila-resumen.total {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .tarjetas-aceptadas {
+        flex-wrap: wrap;
+    }
+    
+    .notificacion {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+    }
+}
+
+/* EFECTOS HOVER NO UTILIZADOS: INNESESARIOS POR AHORA
+    APLICABLES SI SE SOLICITA MEJORA VISUAL
+
+
+.grupo-input:hover span {
+    color: var(--azul-secundario);
+}
+
+.grupo-input:hover span i {
+    animation: latido 1s ease infinite;
+}
+
+*/
+
+/* Scroll personalizado */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--azul-muy-claro);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--azul-secundario);
+    border-radius: 10px;
+    transition: var(--transicion);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--azul-principal);
+}
+
+/* Estados de carga */
+.btn-confirmar.cargando {
+    position: relative;
+    color: transparent;
+}
+
+.btn-confirmar.cargando::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border: 3px solid var(--blanco);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: girar 1s linear infinite;
+}
+
+@keyframes girar {
+    to { transform: rotate(360deg); }
+}
+
+/* Validación visual mejorada */
+.mensaje-error {
+    color: var(--rojo);
+    font-size: 0.9rem;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: deslizarArriba 0.3s ease;
+}
+
+.mensaje-error i {
+    font-size: 0.9rem;
+}
+
+.mensaje-exito {
+    color: var(--verde);
+    font-size: 0.9rem;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: deslizarArriba 0.3s ease;
+}
+
+.mensaje-exito i {
+    font-size: 0.9rem;
+}

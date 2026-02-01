@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de Administración</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../../Css/Dasboard.css" />
+  </head>
+  <body>
+    <section class="dashboard-container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="logo">
+          <i class="fas fa-cogs"></i>
+          <h2>Admin Panel</h2>
+        </div>
+        <nav class="menu">
+          <button class="menu-btn active" data-section="dashboard">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </button>
+          <button class="menu-btn" data-section="productos">
+            <i class="fas fa-box"></i>
+            <span>Productos</span>
+          </button>
+          <button class="menu-btn" data-section="registrar">
+            <i class="fas fa-plus-circle"></i>
+            <span>Registrar Producto</span>
+          </button>
+          <button class="menu-btn" data-section="actualizar">
+            <i class="fas fa-edit"></i>
+            <span>Actualizar Producto</span>
+          </button>
+          <button class="menu-btn" data-section="pedidos">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Gestión de Pedidos</span>
+          </button>
+          <button class="menu-btn" data-section="categorias">
+            <i class="fas fa-tags"></i>
+            <span>Categorías</span>
+          </button>
+          <button class="menu-btn" data-section="usuarios">
+            <i class="fas fa-users"></i>
+            <span>Usuarios</span>
+          </button>
+        </nav>
+        <div class="user-info">
+          <div class="user-avatar">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <div class="user-details">
+            <strong id="rol">Administrador</strong>
+            <small id="nombre-usuario">Admin Sistema</small>
+          </div>
+          <button class="logout-btn" id="logout">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ESTADISTICAS Y NOTIFICACIONES-->
+      <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+          <h1 id="section-title">Dashboard</h1>
+        </header>
+
+        <!-- Dashboard Estadisticas-->
+        <section class="content-section active" id="dashboard-section">
+          <div class="stats-container">
+            <!-- Productos Activos -->
+            <div class="stat-card" id="productos-activos">
+              <div class="stat-icon">
+                <i class="fas fa-box"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="numero-productos">0</h3>
+                <p>Productos Activos</p>
+              </div>
+            </div>
+            <!-- Pedidos por Mes -->
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="pedidos-mes">0</h3>
+                <p>Pedidos del Mes</p>
+                <div class="filtro-mes">
+                  <input type="date" id="filtro-fecha-mes" />
+                  <small class="form-text"
+                    >Selecciona una fecha para ver pedidos de ese mes</small
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Total de Ventas (filtra por estado confirmado) -->
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="total-ventas">0</h3>
+                <p>Total de Ventas</p>
+                <div class="filtro-ventas">
+                  <input type="date" id="filtro-fecha-ventas" />
+                </div>
+                <small class="form-text">Solo pedidos confirmados</small>
+              </div>
+            </div>
+
+            <!-- Usuarios Registrados -->
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="usuarios-registrados">0</h3>
+                <p>Usuarios Registrados</p>
+              </div>
+            </div>
+          </div>
+
+          <!--Pedidos Recientes -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Pedidos Recientes</h3>
+              <div class="filtros-pedidos">
+                <select id="filtro-periodo-pedidos">
+                  <option value="hoy">Hoy</option>
+                  <option value="ayer">Ayer</option>
+                  <option value="semana">Esta Semana</option>
+                  <option value="mes" selected>Este Mes</option>
+                  <option value="todos">Todos</option>
+                </select>
+                <input type="date" id="filtro-fecha-pedidos" />
+                <button id="aplicar-filtro-pedidos" class="btn-primary btn-sm">
+                  <i class="fas fa-filter"></i> Filtrar
+                </button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th># Identificador</th>
+                    <th>Cliente</th>
+                    <th>Método Pago</th>
+                    <th>Envío/Recoge</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="pedidos-recientes">
+                  <!-- Pedidos se cargarán aquí -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Gestión de Productos -->
+        <section class="content-section" id="productos-section">
+          <div class="section-header">
+            <span>BUSCAR</span>
+            <div class="search-box" style="margin: 0">
+              
+              <i class="fas fa-search"></i>
+              <input
+                type="text"
+                id="buscador-productos"
+                placeholder="Buscar por ID o nombre..."
+              />
+            </div>
+            <button class="btn-primary" id="refreshProducts">
+              <i class="fas fa-sync-alt"></i> Actualizar
+            </button>
+          </div>
+          <div class="card">
+            <div class="filtros-productos">
+              <div class="form-row">
+                <h2>Filtros</h2>
+              </div>
+              <div class="form-row">
+                <!--FILTRAR POR STOCK-->
+                <div class="form-group">
+                  <label>Ordenar por Stock</label>
+                  <select id="filtro-stock">
+                    <option value="">Todos</option>
+                    <option value="sin-stock">Sin stock</option>
+                    <option value="con-stock">Con stock</option>
+                     <option disabled>────────────</option>
+                    <option value="mas-stock">
+                      Ordenar: Mayor stock primero
+                    </option>
+                    <option value="menos-stock">
+                      Ordenar: Menor stock primero
+                    </option>
+                  </select>
+                </div>
+                <!--FILTRAR POR ESTADO-->
+                <div class="form-group">
+                  <label>Estado</label>
+                  <select id="filtro-estado-producto">
+                    <option value="">Todos</option>
+                    <option value="activos">Productos Activos</option>
+                    <option value="inactivos">Productos inactivos</option>
+                  </select>
+                </div>
+
+                <!--FILTRAR POR CATEGORIA-->
+                <div class="form-group">
+                  <label>Categoría</label>
+                  <select name="categoria" id="filtro-categoria-producto">
+                    <option value="">Todos</option>
+                    <option value="sala">Sala</option>
+                    <option value="habitacion">Habitación</option>
+                    <option value="cocina">Cocina</option>
+                    <option value="oficina">Oficina</option>
+                    <option value="patio">Patio</option>
+                    <option value="baño">Baño</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="table-container" id="tabla-productos-container">
+              <table class="data-table" id="tabla-productos">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th>Precio Anterior</th>
+                    <th>Descuento</th>
+                    <th>Precio Actual</th>
+                    <th>Stock</th>
+                    <th>Fecha Registro</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="products-table">
+                  <!-- Los productos se cargarán aquí -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Registrar Producto -->
+        <section class="content-section" id="registrar-section">
+          
+          <div class="card">
+            <form id="form-registrar">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Nombre del Producto *</label>
+                  <input type="text" id="product-name" required />
+                </div>
+                <div class="form-group">
+                  <span>Categoría *</span>
+                  <select id="product-category" required>
+                    <option value="">Seleccionar</option>
+                    <option value="sala">Sala</option>
+                    <option value="habitacion">Habitación</option>
+                    <option value="cocina">Cocina</option>
+                    <option value="oficina">Oficina</option>
+                    <option value="patio">Patio</option>
+                    <option value="baño">Baño</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <span>Precio Original *</span>
+                  <input
+                    type="number"
+                    id="product-precio-original"
+                    step="0.01"
+                    min="0"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <span>Descuento (%)</span>
+                  <input
+                    type="number"
+                    id="product-descuento"
+                    min="0"
+                    max="100"
+                    value="0"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Precio Final</label>
+                  <input type="text" id="product-precio-final" readonly />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Stock Inicial *</label>
+                <input type="number" id="product-stock" required />
+              </div>
+              <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="product-description" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Imágenes</label>
+                <input
+                  type="file"
+                  id="product-images"
+                  multiple
+                  accept="image/*"
+                />
+                <div id="preview-imagenes" class="preview-container"></div>
+              </div>
+              <div class="form-actions">
+                <button type="reset" class="btn-secondary">Limpiar</button>
+                <button type="submit" class="btn-primary">
+                  Guardar Producto
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- Actualizar Producto -->
+        <section class="content-section" id="actualizar-section">
+          
+          <div class="card">
+            <div class="search-product">
+              <input
+                type="text"
+                id="search-update"
+                placeholder="Buscar producto por ID o nombre"
+              />
+              <button class="btn-secondary" id="btn-search-update">
+                <i class="fas fa-search"></i> Buscar
+              </button>
+            </div>
+            <div
+              id="resultado-busqueda"
+              style="display: none; margin-bottom: 20px"
+            >
+              <p>
+                <strong>Producto encontrado:</strong>
+                <span id="nombre-producto-encontrado"></span>
+              </p>
+            </div>
+            <form id="form-actualizar" style="display: none">
+              <input type="hidden" id="update-id" />
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Nombre</label>
+                  <input type="text" id="update-name" />
+                </div>
+                <div class="form-group">
+                  <label>Categoría</label>
+                  <select name="categoria" id="update-categoria">
+                    <option value="">Seleccionar</option>
+                    <option value="sala">Sala</option>
+                    <option value="habitacion">Habitación</option>
+                    <option value="cocina">Cocina</option>
+                    <option value="oficina">Oficina</option>
+                    <option value="habitacion">Patio</option>
+                    <option value="baño">Baño</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Precio Original</label>
+                  <input
+                    type="number"
+                    id="update-precio-original"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Descuento (%)</label>
+                  <input type="number" id="update-discount" min="0" max="100" />
+                </div>
+                <div class="form-group">
+                  <label>Precio Actual</label>
+                  <input type="text" id="update-precio-actual" readonly />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Stock</label>
+                <input type="number" id="update-stock" />
+              </div>
+              <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="update-description" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Imágenes Actuales</label>
+                <div id="imagenes-actuales" class="preview-container"></div>
+              </div>
+              <div class="form-group">
+                <label>Agregar Nuevas Imágenes</label>
+                <input
+                  type="file"
+                  id="update-images"
+                  multiple
+                  accept="image/*"
+                />
+                <div
+                  id="preview-nuevas-imagenes"
+                  class="preview-container"
+                ></div>
+              </div>
+              <div class="form-actions">
+                <button
+                  type="button"
+                  class="btn-secondary"
+                  id="btn-limpiar-form"
+                >
+                  Limpiar Formulario
+                </button>
+                <button type="submit" class="btn-primary">
+                  Actualizar Producto
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- Gestión de Pedidos -->
+        <section class="content-section" id="pedidos-section">
+          
+          <div class="card">
+            <div class="filtros-pedidos">
+              <div class="form-row">
+                <h2>Filtros</h2>
+              </div>
+              <div class="form-row">
+                <!--FILTRAR POR METODO DE PAGO-->
+                <div class="form-group">
+                  <label>Método de Pago</label>
+                  <select id="filtro-metodo-pago">
+                    <option value="">Todos</option>
+                    <option value="tarjeta">Tarjeta</option>
+                    <option value="transferencia">Transferencia</option>
+                  </select>
+                </div>
+                <!--FILTRAR POR ESTADO-->
+                <div class="form-group">
+                  <label>Estado</label>
+                  <select id="filtro-estado-pedido">
+                    <option value="">Todos</option>
+                    <option value="comprobante_pendiente">
+                      Comprobante Pendiente
+                    </option>
+                    <option value="confirmado">Confirmado</option>
+                    <option value="revision">En Revisión</option>
+                    <option value="cancelado">Cancelado</option>
+                  </select>
+                </div>
+                <!--FILTRAR POR IDENTIFICADOR-->
+                <div class="form-group input-clear-wrapper">
+                  <label for="filtro-identificador">Identificador</label>
+
+                  <div class="input-clear-container">
+                    <input
+                      type="text"
+                      id="filtro-identificador"
+                      placeholder="ej: vent-000035-26"
+                      maxlength="14"
+                      autocomplete="off"
+                    />
+                    <span
+                      id="clear-identificador"
+                      class="clear-input"
+                      title="Limpiar"
+                      >×</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="table-container" id="Gestion-pedidos">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th># Identificador</th>
+                    <th>Cliente</th>
+                    <th>Teléfono</th>
+                    <th>Método Pago</th>
+                    <th>Envío/Recoge</th>
+                    <th>Costo Envío</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-pedidos">
+                  <!-- Pedidos se cargarán aquí -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Categorías -->
+        <section class="content-section" id="categorias-section">
+          <div class="section-header">
+            <h2>Gestión de Categorías</h2>
+            <button class="btn-primary" id="add-category">
+              <i class="fas fa-plus"></i> Nueva Categoría
+            </button>
+          </div>
+          <div class="card">
+            <div class="categories-list">
+              <!-- Categorías se cargarán aquí -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Usuarios -->
+        <section class="content-section" id="usuarios-section">
+          <div class="section-header">
+            <h2>Gestión de Usuarios</h2>
+            <button class="btn-primary" id="btn-nuevo-usuario">
+              <i class="fas fa-plus"></i> Nuevo Usuario
+            </button>
+          </div>
+
+          <div class="card">
+            <!-- Formulario de registro/edición (oculto inicialmente) -->
+            <div
+              id="form-usuario-container"
+              style="display: none; margin-bottom: 20px"
+            >
+              <h3 id="form-usuario-titulo">Registrar Nuevo Usuario</h3>
+              <form id="form-usuario">
+                <input type="hidden" id="usuario-id" />
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Nombre Completo *</label>
+                    <input type="text" id="usuario-nombre" required />
+                  </div>
+                  <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="usuario-email" required />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Rol *</label>
+                    <select id="usuario-rol" required>
+                      <option value="">Seleccionar</option>
+                      <option value="admin">Administrador</option>
+                      <option value="tienda">Usuario Tienda</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Estado *</label>
+                    <select id="usuario-estado" required>
+                      <option value="activo">Activo</option>
+                      <option value="inactivo">Inactivo</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Contraseña *</label>
+                    <input
+                      type="password"
+                      id="usuario-password"
+                      placeholder="Dejar en blanco para no cambiar"
+                    />
+                    <small class="form-text">Mínimo 6 caracteres</small>
+                  </div>
+                  <div class="form-group">
+                    <label>Confirmar Contraseña</label>
+                    <input type="password" id="usuario-password-confirm" />
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="btn-secondary"
+                    id="btn-cancelar-usuario"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    class="btn-primary"
+                    id="btn-guardar-usuario"
+                  >
+                    Guardar Usuario
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Tabla de usuarios -->
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Último Acceso</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table">
+                  <!-- Usuarios se cargarán aquí -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- Modal de Confirmación -->
+    <div id="modal-confirmacion" class="modal" style="display: none">
+      <div class="modal-content">
+        <h3>Confirmar Eliminación</h3>
+        <p id="mensaje-confirmacion">
+          ¿Está seguro de que quiere inhabilitar este producto?
+        </p>
+        <div class="modal-actions">
+          <button class="btn-secondary" id="btn-cancelar">No</button>
+          <button class="btn-danger" id="btn-confirmar">Sí</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Servicio de autenticación primero -->
+    <script src="./Scripts/Auth-service.js"></script>
+
+    <!-- Configuración después -->
+    <script src="./Scripts/Config.js"></script>
+
+    <!-- Módulos de autenticación y utilidades -->
+    <script src="./Scripts/Auth.js"></script>
+    <script src="./Scripts/Utils.js"></script>
+
+    <!-- Módulos de funcionalidad -->
+    <script src="./Scripts/Estadisticas.js"></script>
+    <script src="./Scripts/Imagenes.js"></script>
+    <script src="./Scripts/Productos.js"></script>
+    <script src="./Scripts/Pedidos.js"></script>
+    <script src="./Scripts/Usuarios.js"></script>
+
+    <!-- Archivo global (que llamabas Extras.js) -->
+    <script src="../../Scripts/Global.js"></script>
+
+    <!-- Eventos y main -->
+    <script src="./Scripts/Eventos.js"></script>
+    <script src="./Scripts/Main.js"></script>
+    <script src="./Scripts/debug.js"></script>
+  </body>
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Muebles Comayagua</title>
+    <link rel="stylesheet" href="Css/index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <!--contenedor  Superior-->
+    <header class="navegacion">
+      <section class="logo">
+        <section class="box">
+          <figure>
+            <a href="" class="icono" target="_blank">
+              <img src=".\img\logo.png" />
+            </a>
+          </figure>
+        </section>
+      </section>
+      <!--Conenedor de titulos-->
+      <section id="cont_presentacion">
+        <h1 id="txt_titulo">Muebles que transforman tu hogar</h1>
+        <span id="descripcion_titulo"
+          >Estilo, comodidad y calidad a precios accesibles.</span
+        >
+      </section>
+
+      <!--PAGINA OPCIONAL, PUEDE IMPLEMENTARSE LUEGO SI EL CLIENTE DESEA
+      <section id="Menu">
+        <button id="btn">Nosotros</button>
+        
+        <a href="./Pages/Contacto.html">
+          <button id="btn">Contactanos</button>
+        </a>
+       
+
+      </section>
+      
+      <section class="cont_carrito">
+        <section id="carrito">
+          <a href="./Pages/Carrito.html" target="_self">
+            <button class="btn">
+              <i class="fas fa-shopping-cart" id="icon-statico"></i>
+              <span>Carrito</span>
+            </button>
+          </a>
+        </section>
+      </section>
+
+ -->
+
+      </header>
+
+    <!--BUSCADOR POR PALABRAS-->
+    <section class="Filtros">
+      <section class="catalog-header">
+        <section>
+          <h1 class="catalog-title">
+            <i class="fas fa-boxes"></i> Catálogo de Productos
+          </h1>
+        </section>
+        <a
+          href="./Pages/Carrito.html"
+          class="btn"
+          id="btn-ver-carrito"
+          target="_self"
+        >
+          <i class="fas fa-shopping-cart" id="icon-statico"></i>
+          <span>Carrito</span>
+        </a>
+      </section>
+      <section id="buscar-producto">
+        <input
+          type="search"
+          name="buscar"
+          id="buscar"
+          placeholder="Buscar por Palabra Clave"
+        />
+
+        <!--CATEGORIAS-->
+        <section class="Desplegable">
+          <button class="Desplegable-btn">
+            <span
+              ><i class="fas fa-bars" id="icon-statico"></i> Categorías</span
+            >
+            <i class="fas fa-chevron-down"></i>
+          </button>
+
+          <section class="Desplegable-contenido" id="filtro-categorias">
+            <a href="#" class="Desplegable-item" data-cat="Cocina">
+              <i class="fas fa-utensils"></i> <span>Cocina</span>
+            </a>
+            <a href="#" class="Desplegable-item" data-cat="Habitacion">
+              <i class="fas fa-bed"></i> <span>Habitación</span>
+            </a>
+            <a href="#" class="Desplegable-item" data-cat="Sala">
+              <i class="fas fa-couch"></i> <span>Sala</span>
+            </a>
+            <a href="#" class="Desplegable-item" data-cat="Patio">
+              <i class="fas fa-tree"></i> <span>Patio</span>
+            </a>
+            <a href="#" class="Desplegable-item" data-cat="Oficina">
+              <i class="fas fa-briefcase"></i> <span>Oficina</span>
+            </a>
+            <a href="#" class="Desplegable-item" data-cat="Baño">
+              <i class="fas fa-bath"></i> <span>Baño</span>
+            </a>
+            <a href="#" class="Desplegable-item" data-cat="Todos">
+              <i class="fas fa-bars"></i> <span>Todos</span>
+            </a>
+          </section>
+        </section>
+
+        <!--ORDENAR POR-->
+        <section class="Desplegable">
+          <button class="Desplegable-btn" id="desp-ord">
+            <span
+              ><i class="fas fa-filter" id="icon-statico"></i> Ordenar Por</span
+            >
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <section class="Desplegable-contenido" id="desp-cotent">
+            <a href="#" class="Desplegable-item" id="precio-menor">
+              <i class="fas fa-money-bill"></i>
+              <span>Precio Menor a Mayor</span>
+            </a>
+            <a href="#" class="Desplegable-item" id="precio-mayor">
+              <i class="fas fa-money-bill"></i>
+              <span>Precio Mayor a Menor</span>
+            </a>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <!--Seccion donde se mostraran los productos-->
+    <main class="product-contenedor">
+      <section class="product-grid">
+        <!-- Producto 1 -->
+        <section
+          class="product-tarjeta"
+          data-precio="1,450.00"
+          data-nombre="Mesa de Centro Gris Moderna"
+          data-categoria="Sala"
+          id="Trajeta-descuento"
+        >
+          <section class="product-image-container">
+            <img
+              src="https://ventasmuebles.com/uploads/prod_212_68d57042a9f8f5.06711185.jpg"
+              alt="Mesa de Centro Gris"
+            />
+            <section
+              class="product-overlay"
+              onclick="abrirGaleria(['./img/logo.png','./img/logo.png','./img/logo.png'])"
+            >
+              <i class="fas fa-images"></i> Ver Galería
+            </section>
+          </section>
+          <section class="product-informacion">
+            <h3 class="product-nombre">Mesa de Centro Gris Moderna</h3>
+            <p class="product-categoria"><i class="fas fa-tag"></i> Sala</p>
+            <section class="product-precio">
+              <span class="product-price-anterior">
+                <s>HNL 2,450.00</s>
+              </span>
+              <span class="product-price-actual">
+                HNL 1,450.00
+                <span class="discount-badge">-41%</span>
+              </span>
+            </section>
+
+            <!--SELECTOR DE CANTIDAD AÑADIDO -->
+            <section class="product-cantidad">
+              <button class="cantidad-btn" onclick="cambiarCantidad(this, -1)">
+                <i class="fas fa-minus"></i>
+              </button>
+              <input
+                type="number"
+                value="1"
+                min="1"
+                readonly
+                class="cantidad-input"
+              />
+              <button class="cantidad-btn" onclick="cambiarCantidad(this, 1)">
+                <i class="fas fa-plus"></i>
+              </button>
+            </section>
+
+            <section class="product-acciones">
+              <a class="btn-carrito" disabled>
+                <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+              </a>
+              <a class="btn-comprar">
+                <i class="fas fa-bolt"></i>Comprar ahora
+              </a>
+            </section>
+          </section>
+        </section>
+
+        <!-- Producto 2 -->
+        <section
+          class="product-tarjeta"
+          data-precio="4,800.00"
+          data-nombre="Cama King Size con Cabecero"
+          data-categoria="Habitacion"
+          id="tarjeta-normal"
+        >
+          <section class="product-image-container">
+            <img
+              src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+              alt="Cama King Size"
+            />
+            <section
+              class="product-overlay"
+              onclick="abrirGaleria(['./img/facebook1.ico','./img/logo.png','./img/logo.png'])"
+            >
+              <i class="fas fa-images"></i> Ver Galería
+            </section>
+          </section>
+          <section class="product-informacion">
+            <h3 class="product-nombre">Cama King Size con Cabecero</h3>
+            <p class="product-categoria">
+              <i class="fas fa-tag"></i> Habitacion
+            </p>
+            <section class="product-precio">
+              <span class="product-price-actual"> HNL 4,800.00 </span>
+            </section>
+
+            <!--SELECTOR DE CANTIDAD AÑADIDO -->
+            <section class="product-cantidad">
+              <button class="cantidad-btn" onclick="cambiarCantidad(this, -1)">
+                <i class="fas fa-minus"></i>
+              </button>
+              <input
+                type="number"
+                value="1"
+                min="1"
+                readonly
+                class="cantidad-input"
+              />
+              <button class="cantidad-btn" onclick="cambiarCantidad(this, 1)">
+                <i class="fas fa-plus"></i>
+              </button>
+            </section>
+
+            <section class="product-acciones">
+              <a class="btn-carrito" disabled>
+                <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+              </a>
+
+              <a class="btn-comprar">
+                <i class="fas fa-bolt"></i>Comprar ahora
+              </a>
+            </section>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <!-- MODAL DE GALERÍA -->
+    <section id="galleryModal" class="galeria-modal">
+      <span class="close-modal" id="closeModal">&times;</span>
+
+      <section class="galeria-contenido">
+        <button class="nav-arrow left" id="prevImg">&#10094;</button>
+
+        <img id="galeriaImagen" class="galeria-img" src="" />
+
+        <button class="nav-arrow right" id="nextImg">&#10095;</button>
+      </section>
+    </section>
+
+    <!-- MODAL DE DETALLES COMPLETOS -->
+    <section id="detailsModal" class="detalles-modal">
+      <section class="detalles-contenido">
+        <span class="close-details-modal" id="closeDetailsModal">&times;</span>
+
+        <section class="modal-header">
+          <h2 id="modalProductName">Nombre del Producto</h2>
+          <section class="modal-precio">
+            <span id="modalProductPrice">HNL 0.00</span>
+            <span class="modal-categoria" id="modalProductCategory"></span>
+          </section>
+        </section>
+
+        <!-- Pestañas simplificadas -->
+        <section class="modal-tabs">
+          <button class="tab-btn active" data-tab="imagenes">
+            <i class="fas fa-images"></i> Galería
+          </button>
+          <button class="tab-btn" data-tab="descripcion">
+            <i class="fas fa-align-left"></i> Descripción
+          </button>
+        </section>
+
+        <!-- Contenido de las pestañas -->
+        <section class="tab-content-container">
+          <!-- Pestaña de Imágenes -->
+          <section class="tab-content active" id="tab-imagenes">
+            <section class="galeria-modal-mini">
+              <section class="galeria-mini-contenido">
+                <button class="nav-arrow-mini left" id="prevImgMini">
+                  &#10094;
+                </button>
+                <img
+                  id="galeriaImagenMini"
+                  class="galeria-img-mini"
+                  src=""
+                  alt="Imagen del producto"
+                />
+                <button class="nav-arrow-mini right" id="nextImgMini">
+                  &#10095;
+                </button>
+              </section>
+              <section class="galeria-mini-thumbnails" id="thumbnailsContainer">
+                <!-- Miniaturas se generan dinámicamente -->
+              </section>
+            </section>
+          </section>
+
+          <!-- Pestaña de Descripción -->
+          <section class="tab-content" id="tab-descripcion">
+            <section class="descripcion-completa-contenido">
+              <h3>Descripción Detallada</h3>
+              <div class="descripcion-texto" id="modalProductDescription">
+                Cargando descripción...
+              </div>
+
+              <section class="info-adicional">
+                <div class="info-item">
+                  <i class="fas fa-box"></i>
+                  <div>
+                    <strong>Stock disponible:</strong>
+                    <span id="modalProductStock">0 unidades</span>
+                  </div>
+                </div>
+                <div class="info-item">
+                  <i class="fas fa-tag"></i>
+                  <div>
+                    <strong>Categoría:</strong>
+                    <span id="modalProductCategoryText">General</span>
+                  </div>
+                </div>
+                <div class="info-item">
+                  <i class="fas fa-shipping-fast"></i>
+                  <div>
+                    <strong>Disponibilidad:</strong>
+                    <span id="modalProductAvailability">Disponible</span>
+                  </div>
+                </div>
+              </section>
+            </section>
+          </section>
+        </section>
+
+        <!-- Acciones del producto en el modal -->
+        <section class="modal-actions">
+          <section class="modal-cantidad">
+            <span class="cantidad-label">Cantidad:</span>
+            <button class="cantidad-btn" onclick="cambiarCantidadModal(-1)">
+              <i class="fas fa-minus"></i>
+            </button>
+            <input
+              type="number"
+              value="1"
+              min="1"
+              id="modalCantidadInput"
+              class="cantidad-input"
+            />
+            <button class="cantidad-btn" onclick="cambiarCantidadModal(1)">
+              <i class="fas fa-plus"></i>
+            </button>
+          </section>
+
+          <section class="modal-botones">
+            <button class="modal-btn-carrito" id="modalAddToCart">
+              <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+            </button>
+            <button class="modal-btn-comprar" id="modalBuyNow">
+              <i class="fas fa-bolt"></i> Comprar Ahora
+            </button>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <script src="./Scripts/Index.js"></script>
+  </body>
+
+  <footer class="Footer">
+    <section class="informacion">
+      <section class="box">
+        <figure>
+          <a href="" class="icono" target="_self">
+            <img src=".\img\logo.png" />
+          </a>
+        </figure>
+      </section>
+      <section class="box">
+        <h2>Sobre Nosotros</h2>
+        <p>Descripción de la página</p>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut,
+          architecto.
+        </p>
+      </section>
+
+      <section class="box">
+        <h2>Siguenos</h2>
+        <section class="redSocial">
+          <a
+            href="https://www.facebook.com/VisitHonduras/"
+            class="icono"
+            target="_blank"
+          >
+            <img src=".\Img\facebook1.ico" alt="facebook logo" />
+          </a>
+          <a
+            href="https://twitter.com/visithonduras"
+            class="icono"
+            target="_blank"
+          >
+            <img src=".\Img\twitter1.ico" alt="twitter logo" />
+          </a>
+          <a
+            href="https://www.instagram.com/visithonduras/"
+            class="icono"
+            target="_blank"
+          >
+            <img src=".\Img\instagram1.ico" alt="instagram logo" />
+          </a>
+        </section>
+      </section>
+    </section>
+
+    <section class="Derechos">
+      <small>&copy; 2026 <b>Nexus</b> - Todos los Derechos Recervados</small>
+    </section>
+  </footer>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Facturación</title>
+
+    <!-- Íconos -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="../Css/facturacion_pago.css">
+</head>
+
+<body>
+
+    <h1><i class="fas fa-file-invoice"></i> Datos de Facturación</h1>
+
+    <section class="contenedor-factura">
+
+        <!-- FORMULARIO -->
+        <section class="formulario">
+
+            <h2>Información del Cliente</h2>
+
+            <div class="grupo-input">
+                <span>Nombre Completo<i class="fa fa-asterisk"></i></span>
+                
+                <input type="text" id="nombreCliente" title="Campo Requerido" required />
+            </div>
+
+            <div class="grupo-input">
+                <span>Correo Electrónico<i class="fa fa-asterisk"></i></span>
+                <input type="email" id="correoCliente" title="Campo Requerido" required />
+            </div>
+
+            <div class="grupo-input">
+                <span>Teléfono<i class="fa fa-asterisk"></i></span>
+                <input type="text" id="telefonoCliente" title="Campo Requerido" required />
+            </div>
+
+            <h2>Dirección de Envío</h2>
+
+            <!--PENDIENTE DE COMPROBACION EN CASO DE QUE LA
+            LA TIENDA NO REALIZE ENVIOS FUERA DE COMAYAGUA-->
+            <div class="grupo-input">
+                <span>Ciudad<i class="fa fa-asterisk"></i></span>
+                <input type="text" id="ciudadCliente" title="Campo Requerido" required />
+            </div>
+
+            <div class="grupo-input">
+                <span>Dirección Exacta<i class="fa fa-asterisk"></i></span>
+                <input type="text" id="direccionCliente" title="Campo Requerido" required />
+            </div>
+
+            <!-- MÉTODO DE PAGO -->
+            <section class="metodos-pago">
+                <h3>Método de Pago</h3>
+
+                <div class="opciones-pago">
+                    <span>
+                        <input type="radio" name="pago" value="transferencia" checked />
+                        <i class="fas fa-university"></i> Transferencia Bancaria
+                    </span>
+
+                    <span>
+                        <input type="radio" name="pago" value="tarjeta" />
+                        <i class="fas fa-credit-card"></i> Tarjeta de Crédito/Débito
+                    </span>
+                </div>
+
+                <!-- TRANSFERENCIA 
+                 <div class="bloque-transferencia" id="bloqueTransferencia">
+                    <h4>Datos Bancarios</h4>
+                    <p><strong>Banco:</strong> Banco Atlantida</p>
+                    <p><strong>Nombre:</strong> Muebles Comayagua</p>
+                    <p><strong>Número de cuenta:</strong> 002345678921</p>
+                    <p>
+                        Recuerda que después de confirmar el pedido, debes enviar tu comprobante
+                        con tu número de orden para confirmar el pago.<br>
+                        <strong>Numero: +504 3256-8974</strong>
+                    </p>
+                </div>
+                -->
+                
+                <!-- TARJETA  
+                  <div class="bloque-tarjeta" id="bloqueTarjeta">
+                    <h4>Datos de la Tarjeta</h4>
+                    <div class="grupo-input">
+                        <label>Número de Tarjeta</label>
+                        <input type="text" id="numeroTarjeta" placeholder="0000 0000 0000 0000" />
+                    </div>
+
+                    <div class="grupo-input">
+                        <label>Mes y Año de Expiración</label>
+                        <input type="text" id="expiracionTarjeta" placeholder="MM/AA" />
+                    </div>
+
+                    <div class="grupo-input">
+                        <label>Código CVV</label>
+                        <input type="text" id="cvvTarjeta" placeholder="123" />
+                    </div>
+                </div>
+                -->
+
+            </section>
+
+            <button class="btn-Accion" id="btnConfirmarCompra">
+                <i class="fas fa-check"></i> Confirmar Pedido
+            </button>
+            <button class="btn-Accion" id="btn-volver">
+                <i class="fas fa-arrow-left"></i>Volver
+            </button>
+
+        </section>
+
+        <!-- RESUMEN DEL PEDIDO -->
+        <section class="resumen">
+            <h3><i class="fas fa-receipt"></i> Resumen del Pedido</h3>
+
+            <div class="fila-resumen">
+                <span>Subtotal:</span>
+                <span id="resumenSubtotal">$0.00</span>
+            </div>
+
+            <div class="fila-resumen">
+                <span>Envío:</span>
+                <span id="resumenEnvio">$0.00</span>
+            </div>
+
+            <div class="fila-resumen">
+                <span>ISV (15%):</span>
+                <span id="resumenImpuestos">$0.00</span>
+            </div>
+
+            <div class="fila-resumen total">
+                <span>Total:</span>
+                <span id="resumenTotal">$0.00</span>
+            </div>
+        </section>
+    </section>
+    
+<script src="../Scripts/Global.js"></script>
+<script src="../Scripts/Facturacion.js"></script>
+
+
+</body>
+</html>

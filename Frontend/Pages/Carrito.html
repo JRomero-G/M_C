@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carrito de Compras</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../Css/Carrito.css" />
+  </head>
+  <body>
+    <div class="carrito-contenedor">
+      <!-- Header del carrito -->
+      <div class="carrito-header">
+        <div class="carrito-titulo">
+          <h1><i class="fas fa-shopping-cart"></i> Carrito de Compras</h1>
+        </div>
+        <!--
+        <button class="btn-vaciar-carrito" id="vaciarCarrito">
+          <i class="fas fa-trash"></i> Vaciar Carrito
+        </button>
+        -->
+      </div>
+
+      <!-- Contenedor principal -->
+      <div class="carrito-principal">
+        <!-- Lista de productos (con scroll) -->
+        <div class="productos-contenedor" id="productosContenedor">
+          <div id="listaProductos"></div>
+
+          <div class="carrito-vacio" id="carritoVacio">
+            <i class="fas fa-shopping-basket"></i>
+            <h3>Tu carrito está vacío</h3>
+            <p>Agrega productos para comenzar a comprar</p>
+            <a
+              class="btn-seguir-comprando"
+              id="btn-seguir-Comprando2"
+            >
+              <i class="fas fa-store"></i>
+              Seguir Comprando
+            </a>
+          </div>
+        </div>
+
+        <!-- Resumen del pedido -->
+        <div class="resumen-pedido">
+          <div class="resumen-header">
+            <h3><i class="fas fa-receipt"></i> Resumen del Pedido</h3>
+          </div>
+
+          <div class="resumen-detalles">
+            <div class="detalle-item">
+              <span>Subtotal</span>
+              <span class="valor" id="subtotal">HN 0.00</span>
+            </div>
+            <div class="detalle-item">
+              <span>Envío</span>
+              <div class="envio-opciones">
+                <select id="tipoEnvio">
+                  <option id="Recoger" value="0">Recoger en tienda (Gratis)</option>
+                  <option id= "Envio-estandar" value="">Envío estándar (HN 670)</option>
+                  <option id="Envio-express" value="">Envío express (HN 1400)</option>
+                </select>
+              </div>
+            </div>
+            <div class="detalle-item">
+              <span>ISV (15%)</span>
+              <span class="valor" id="impuestos">HN 0.00</span>
+            </div>
+            <div class="detalle-item total">
+              <span><strong>Total</strong></span>
+              <span class="valor" id="total"><strong>HN 0.00</strong></span>
+            </div>
+          </div>
+
+          <div class="resumen-acciones">
+            <a
+              class="btn-continuar-pago"
+              id="continuarPago"
+              ><i class="fas fa-credit-card"></i> Continuar al Pago</a
+            >
+            <a
+              class="btn-seguir-comprando"
+              id="btn-seguir-Comprando"
+            >
+              <i class="fas fa-arrow-left"></i>
+              <span>Seguir Comprando</span>
+            </a>
+          </div>
+
+          <!-- Información adicional -->
+          <div class="resumen-info">
+            <div class="info-item">
+              <i class="fas fa-shield-alt"></i>
+              <span>Compra 100% segura</span>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-truck"></i>
+              <span>Envío en 24-48 horas (Solo Comayagua)</span>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-undo"></i>
+              <span>Devoluciones gratuitas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../Scripts/Carrito.js"></script>
+  </body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contactanos</title>
+    <link rel="stylesheet" href="../Css/Contactanos.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!--contenedor  Superior-->
+    <header class="navegacion">
+      <section class="logo">
+        <section class="box">
+          <figure>
+            <a href="/Frontend/Index.html" class="icono" target="_self">
+              <img src="..\img\logo.png" />
+            </a>
+          </figure>
+        </section>
+      </section>
+      <!--Conenedor de titulos-->
+      <section id="cont_presentacion" style="border: solid">
+        <h1 id="txt_titulo">Muebles que transforman tu hogar</h1>
+        <span id="descripcion_titulo"
+          >Estilo, comodidad y calidad a precios accesibles.</span
+        >
+      </section>
+
+      <section id="Menu" style="border: solid">
+        <button id="btn">Inicio </button>
+         <a href="/Frontend/Index.html">
+          <button id="btn">Nosotros</button>
+        </a>
+      </section>
+
+      <!--
+        <section id="cont_login">
+        <section class="login">
+          <button class="login-btn">
+
+            <span><i class="fas fa-user"></i></span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+
+          <section class="login-contenido">
+           
+            <a href="#" class="login-item">
+              <i class="fas fa-key"></i>
+              <span>Iniciar sesion</span>
+            </a>
+            <a href="#" class="login-item">
+              <i class="fas fa-shopping-cart"></i>
+              <span>Carrito</span>
+            </a>
+            <a href="#" class="login-item">
+              <i class="fas fa-receipt"></i>
+              <span>Pedidos</span>
+            </a>
+            <a href="#" class="login-item">
+              <i class="fas fa-close"></i>
+              <span>Cerras Sesion</span>
+            </a>
+          </section>
+        </section>
+      </section>
+-->
+    </header>
+
+    <section class="contacto">
+      <form>
+        <h2>Contactanos</h2>
+        <div class="Datos">
+          <label form="name" for="nombre">Nombre: </label>
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            placeholder="Nombre"
+            maxlength="60"
+            minlength="3"
+          />
+
+          <label form="name" for="telefono">Telefono: </label>
+          <input
+            type="text"
+            id="telefono"
+            name="telefono"
+            placeholder="Telefono"
+            maxlength="100"
+            minlength="3"
+          />
+
+          <label form="name" for="email">Email: </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Email"
+            maxlength="50"
+            minlength="10"
+          />
+
+          <label form="name" for="comentario">Comentario:</label>
+          <textarea
+            type="text"
+            id="comentario"
+            name="comentario"
+            cols="30"
+            rows="5"
+            placeholder="Comentario"
+            maxlength="200"
+            minlength="1"
+          ></textarea>
+
+          <div class="Form-txt">
+            <a href="#" onclick="openModal('Privacidad-modal')"
+              >Politica de Privacidad</a
+            >
+            <br />
+            <a href="#" onclick="openModal('Terminos-modal')"
+              >Terminos y Condiciones</a
+            >
+          </div>
+
+          <input id="btn" type="submit" value="Enviar" />
+        </div>
+      </form>
+
+      <div id="Privacidad-modal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal('Privacidad-modal')"
+            >&times;</span
+          >
+          <h2>Politica de Privacidad</h2>
+          <p>
+            Última actualización: [Fecha] En LugaresHonduras.com, tu privacidad
+            es importante para nosotros. A continuación, detallamos cómo
+            recopilamos, usamos y protegemos tu información.
+
+            <strong>1. Información que Recopilamos</strong> <br /><br />
+            Información personal: Nombre, correo electrónico, teléfono y
+            comentarios enviados a través del formulario de contacto.
+            Información no personal: Datos de navegación como dirección IP, tipo
+            de navegador y tiempo de visita.<br /><br />
+            <strong>2. Uso de la Información</strong> <br /><br />
+            Utilizamos tu información para responder a tus consultas y mejorar
+            nuestro sitio web. Nunca compartimos tu información personal con
+            terceros, excepto cuando sea requerido por ley.<br /><br />
+            <strong>3. Protección de Datos</strong> <br /><br />
+            Implementamos medidas de seguridad para proteger tu información,
+            pero no podemos garantizar una seguridad absoluta.<br /><br />
+            <strong>4. Cookies</strong> <br /><br />
+            Utilizamos cookies para mejorar tu experiencia. Puedes desactivar
+            las cookies en la configuración de tu navegador.<br /><br />
+            <strong>5. Cambios en las Políticas</strong> <br /><br />
+            Nos reservamos el derecho de actualizar estas políticas en cualquier
+            momento. Los cambios serán publicados en esta página.<br /><br />
+          </p>
+        </div>
+      </div>
+
+      <!-- Terminos Modal -->
+      <div id="Terminos-modal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal('Terminos-modal')"
+            >&times;</span
+          >
+          <h2>Términos y Condiciones</h2>
+          <p>
+            Última actualización: 21/11/2024<br />
+            Bienvenido a LugaresHonduras.com. Al acceder y utilizar nuestro
+            sitio web, aceptas los siguientes términos y condiciones. Por favor,
+            léelos detenidamente.<br /><br />
+            <strong>1. Uso del Sitio Web</strong> <br /><br />
+            Este sitio es únicamente para fines informativos sobre sitios
+            turísticos en Honduras. No garantizamos que la información esté
+            completa o actualizada. Te recomendamos verificar los datos antes de
+            planificar un viaje. Queda prohibido el uso del contenido del sitio
+            para fines comerciales sin autorización previa.<br /><br />
+            <strong>2. Propiedad Intelectual</strong> <br /><br />
+            Todo el contenido del sitio, incluidas imágenes, textos y gráficos,
+            es propiedad de LugaresHonduras.com o de sus respectivos autores y
+            está protegido por leyes de propiedad intelectual. No está permitido
+            copiar, distribuir o modificar nuestro contenido sin permiso.<br /><br />
+            <strong>3. Enlaces a Terceros</strong> <br /><br />
+            Nuestro sitio puede contener enlaces a sitios web de terceros. No
+            somos responsables del contenido ni de las políticas de privacidad
+            de esos sitios.<br /><br />
+            <strong>4. Exclusión de Responsabilidad</strong> <br /><br />
+            No somos responsables por daños o pérdidas derivadas del uso de
+            nuestro sitio web.<br /><br />
+            <strong>5. Modificaciones</strong> <br /><br />
+            Nos reservamos el derecho de actualizar estos términos en cualquier
+            momento. Los cambios serán publicados en esta página.<br /><br />
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="Footer">
+      <section class="informacion">
+        <section class="box">
+          <figure>
+            <a href="" class="icono" target="_blank">
+              <img src="..\img\logo.png" />
+            </a>
+          </figure>
+        </section>
+        <section class="box">
+          <h2>Sobre Nosotros</h2>
+          <p>Descripción de la página</p>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut,
+            architecto.
+          </p>
+        </section>
+
+        <section class="box">
+          <h2>Siguenos</h2>
+          <section class="redSocial">
+            <a
+              href="https://www.facebook.com/VisitHonduras/"
+              class="icono"
+              target="_blank"
+            >
+              <img src="..\Img\facebook1.ico" alt="facebook logo" />
+            </a>
+            <a
+              href="https://twitter.com/visithonduras"
+              class="icono"
+              target="_blank"
+            >
+              <img src="..\Img\twitter1.ico" alt="twitter logo" />
+            </a>
+            <a
+              href="https://www.instagram.com/visithonduras/"
+              class="icono"
+              target="_blank"
+            >
+              <img src="..\Img\instagram1.ico" alt="instagram logo" />
+            </a>
+          </section>
+        </section>
+      </section>
+
+      <section class="Derechos">
+        <small>&copy; 2026 <b>Nexus</b> - Todos los Derechos Recervados</small>
+      </section>
+    </footer>
+    <script>
+      // Funcion para abrir el modal
+      function openModal(modalId) {
+        var modal = document.getElementById(modalId);
+        modal.style.display = "flex";
+      }
+
+      // Funcion para cerrar el nodal
+      function closeModal(modalId) {
+        var modal = document.getElementById(modalId);
+        modal.style.display = "none";
+      }
+
+      // Cerrar el modal al dar click fuera del contenido
+      window.onclick = function (event) {
+        var modals = document.getElementsByClassName("modal");
+        for (var i = 0; i < modals.length; i++) {
+          if (event.target == modals[i]) {
+            modals[i].style.display = "none";
+          }
+        }
+      };
+    </script>
+  </body>
+</html>

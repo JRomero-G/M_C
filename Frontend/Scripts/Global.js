@@ -252,9 +252,21 @@ async function generarFacturaInterna(pedido, config) {
       const tipoEnvio = envioInfo.tipo || pedido.tipo_entrega || "recoger";
       const costoEnvio = pedido.costo_envio || 0;
 
-      let textoEnvio =
+      /*
+       // Obtener tipo de envío para mostrar
+        let textoEnvio =
         tipoEnvio === "recoger" ? "Recoger en tienda" : "Envío a domicilio";
-      if (costoEnvio > 0) {
+      */
+      let textoEnvio = "";
+        if (costoEnvio === 0) {
+          textoEnvio = "Recoger en tienda";
+        } else if (costoEnvio === 670) {
+          textoEnvio = "Envío estándar";
+        } else if (costoEnvio === 1400) {
+          textoEnvio = "Envío express";
+        }
+      
+        if (costoEnvio > 0) {
         textoEnvio += ` - HNL ${costoEnvio.toFixed(2)}`;
       }
 

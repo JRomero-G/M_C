@@ -1,5 +1,5 @@
 // ========== CONFIGURACIÓN ==========
-const BACKEND_URL = "https://m-c-h5or.onrender.com/api"; /*URL del backend en linea */
+//const BACKEND_URL = "https://m-c-h5or.onrender.com/api"; /*URL del backend en linea */
 let productosCatalogo = [];
 let galeriaImagenes = [];
 let indice = 0;

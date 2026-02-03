@@ -50,7 +50,7 @@ async function actualizarDashboard() {
 async function cargarPedidosPorMes(fecha = null) {
   const params = fecha ? `?fecha=${fecha}` : "";
   const res = await fetch(
-    `${window.BACKEND_URL}/pedidos/pedidos-mes${params}`,
+    `${BACKEND_URL}/pedidos/pedidos-mes${params}`,
     {
       headers: AuthService.getAuthHeaders(),
     }
@@ -60,7 +60,7 @@ async function cargarPedidosPorMes(fecha = null) {
 
 async function cargarVentasPorMes(fecha = null) {
   const params = fecha ? `?fecha=${fecha}` : "";
-  const res = await fetch(`${window.BACKEND_URL}/pedidos/ventas-mes${params}`, {
+  const res = await fetch(`${BACKEND_URL}/pedidos/ventas-mes${params}`, {
     headers: AuthService.getAuthHeaders(),
   });
   return res.json();

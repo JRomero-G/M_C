@@ -1,4 +1,4 @@
-const BACKEND_URL = "http://localhost:3000/api";
+
 
 document.getElementById("login-form").addEventListener("submit", async function (e) {
     e.preventDefault();

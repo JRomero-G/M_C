@@ -1,5 +1,5 @@
 // ========== CONFIGURACIÓN GLOBAL ==========
-const BACKEND_URL = "http://localhost:3000/api";
+const BACKEND_URL = "https://m-c-h5or.onrender.com/api"; /*URL del backend en linea */
 const CLOUDINARY_CLOUD_NAME = "imgenesproductos";
 const CLOUDINARY_UPLOAD_PRESET = "venta_muebles_unsigned";
 

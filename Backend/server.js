@@ -72,8 +72,9 @@ app.use((error, req, res, next) => {
 
 // ========== INICIAR SERVIDOR ==========
 const PORT = process.env.PORT;
+const Backend_URL = process.env.Backend_URL;
 app.listen(PORT, () => {
   console.log("=".repeat(50));
-  console.log(`🚀 Servidor en http://localhost:${PORT}`);
+  console.log(`🚀 Servidor en https://m-c-h5or.onrender.com:${PORT}`);
   console.log("=".repeat(50));
 });

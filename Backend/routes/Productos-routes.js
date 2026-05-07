@@ -21,6 +21,7 @@ ProductosRouter.get('/gestion/activos',
   ProductosController.obtenerCantidadProductosActivos
 );
 
+// RUTAS DE IMÁGENES
 ProductosRouter.post('/subir-imagen', ProductosController.subirImagen);
 ProductosRouter.delete('/imagenes/eliminar-unica', ProductosController.eliminarImagenCloudinary);
 ProductosRouter.delete('/imagenes/eliminar-multiple', ProductosController.eliminarMultiplesImagenesCloudinary);
@@ -38,4 +39,3 @@ ProductosRouter.put('/:id/estado',
 );
 
 module.exports = ProductosRouter;
-//VERSION 2

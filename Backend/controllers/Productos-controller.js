@@ -6,7 +6,7 @@ const cloudinary = require("../utils/Cloudinary");
 // 1. Crear producto
 exports.crearProducto = async (req, res) => {
   try {
-    const { nombre, precio_original, descuento, stock, descripcion, imagenes } =
+    const { nombre, precio_original, descuento, stock, descripcion, imagenes, tipo_inventario } =
       req.body;
 
     if (!nombre || !precio_original) {
@@ -28,12 +28,17 @@ exports.crearProducto = async (req, res) => {
       nombre_original: img.nombre_original || `imagen-${index + 1}`,
     }));
 
+    //Determinar stock segun el tipo de inventario
+    const Tipo_Inventario_Final = tipo_inventario === "unico" ? "unico" : "serie";
+    const Stock_final = Tipo_Inventario_Final === "unico" ? 1 : (parseInt(stock) || 0);
+
     const nuevoProducto = new Producto({
       nombre: nombre.trim(),
       descripcion: descripcion?.trim() || "",
       precio_original: parseFloat(precio_original),
       descuento: parseFloat(descuento) || 0,
-      stock: parseInt(stock) || 0,
+      stock: Stock_final,
+      Tipo_Inventario_Final,
       imagenes: imagenesValidadas,
       categoria: req.body.categoria || "General",
     });
@@ -42,6 +47,7 @@ exports.crearProducto = async (req, res) => {
 
     console.log("✅ Producto creado:", nuevoProducto._id);
 
+    // Respuesta con datos clave para mostrar en la tabla de gestión
     res.status(201).json({
       success: true,
       mensaje: "Producto creado exitosamente",
@@ -51,6 +57,7 @@ exports.crearProducto = async (req, res) => {
         precio_final: nuevoProducto.precio_final,
         stock: nuevoProducto.stock,
         imagenes: nuevoProducto.imagenes.length,
+        tipo_inventario: nuevoProducto.tipo_inventario,
       },
     });
   } catch (error) {
@@ -80,7 +87,8 @@ exports.obtenerProductosGestion = async (req, res) => {
       pagina = 1,
       limite = 12,
       buscar = "",
-      categoria = "", // ← Agregar este parámetro
+      categoria = "",
+      tipo_inventario = "",
     } = req.query;
 
     const skip = (pagina - 1) * limite;
@@ -108,13 +116,21 @@ exports.obtenerProductosGestion = async (req, res) => {
     if (stock === "mas-stock") orden.stock = -1;
     if (stock === "menos-stock") orden.stock = 1;
 
+    // Filtro por tipo de inventario
+    //if(tipo_inventario === "unico") filtro.tipo_inventario = "unico";
+    //if(tipo_inventario === "serie") filtro.tipo_inventario = "serie";
+
+    if(tipo_inventario === "unico" || tipo_inventario === "serie") {
+      filtro.tipo_inventario = tipo_inventario;
+    }
+
     const [productos, total] = await Promise.all([
       Producto.find(filtro)
         .sort(orden)
         .skip(skip)
         .limit(parseInt(limite))
         .select(
-          "nombre descripcion precio_original precio_final descuento stock imagenes categoria activo createdAt"
+          "nombre descripcion precio_original precio_final descuento stock imagenes categoria activo tipo_inventario createdAt"
         ),
       Producto.countDocuments(filtro),
     ]);
@@ -144,6 +160,7 @@ exports.obtenerProductosGestion2 = async (req, res) => {
       limite = 12,
       buscar = "",
       categoria = "",
+      tipo_inventario = "",
     } = req.query;
 
     const skip = (pagina - 1) * limite;
@@ -167,7 +184,15 @@ exports.obtenerProductosGestion2 = async (req, res) => {
     if (estado === "activos") filtro.activo = true;
     if (estado === "inactivos") filtro.activo = false;
 
-    // FILTROS POR STOCK (según tu propuesta)
+    // Filtro por tipo de inventario
+    //if(tipo_inventario === "unico") filtro.tipo_inventario = "unico";
+    //if(tipo_inventario === "serie") filtro.tipo_inventario = "serie";
+
+    if(tipo_inventario === "unico" || tipo_inventario === "serie") {
+      filtro.tipo_inventario = tipo_inventario;
+    }
+
+    // FILTROS POR STOCK 
     if (stock === "sin-stock") {
       filtro.stock = 0; // Solo productos con stock 0
     } else if (stock === "con-stock") {
@@ -190,7 +215,7 @@ exports.obtenerProductosGestion2 = async (req, res) => {
         .skip(skip)
         .limit(parseInt(limite))
         .select(
-          "nombre descripcion precio_original precio_final descuento stock imagenes categoria activo createdAt"
+          "nombre descripcion precio_original precio_final descuento stock imagenes categoria activo tipo_inventario createdAt"
         ),
       Producto.countDocuments(filtro),
     ]);
@@ -240,7 +265,7 @@ exports.obtenerProductosCatalogo = async (req, res) => {
     const productos = await Producto.find({ activo: true })
       .sort({ createdAt: -1 })
       .select(
-        "nombre descripcion precio_original precio_final descuento stock imagenes fecha_registro categoria"
+        "nombre descripcion precio_original precio_final descuento stock imagenes fecha_registro categoria tipo_inventario"
       );
 
     res.json({
@@ -274,7 +299,7 @@ exports.obtenerProductoPorId = async (req, res) => {
   }
 };
 
-// 5. Actualizar producto - VERSIÓN 2
+
 exports.actualizarProducto = async (req, res) => {
   try {
     const { id } = req.params;
@@ -314,6 +339,20 @@ exports.actualizarProducto = async (req, res) => {
       producto.categoria = datosActualizados.categoria;
     }
 
+    if(datosActualizados.tipo_inventario !== undefined){
+      const Tipo_Inventario_Nuevo = datosActualizados.tipo_inventario;
+
+      if(Tipo_Inventario_Nuevo === "unico"){
+        producto.tipo_inventario = "unico";
+        producto.stock = 1; // Si es único, el stock siempre es 1
+      } else if(Tipo_Inventario_Nuevo === "serie"){
+        producto.tipo_inventario = "serie";
+          // Si cambia a serie y el stock actual es 1,
+          // dejarlo como está o permitir actualizarlo
+      }
+
+    }
+
     // ================= IMPORTANTE =================
     // Si se envían nuevas imágenes, REEMPLAZAR el array completo
     // Esto es porque el frontend ya combinó las imágenes existentes + nuevas
@@ -342,6 +381,7 @@ exports.actualizarProducto = async (req, res) => {
     await producto.save();
 
     console.log("✅ Producto actualizado:", producto.nombre);
+    console.log("Tipo inventario Nuevo:", producto.tipo_inventario);
     console.log(
       `📸 Total imágenes después de actualizar: ${producto.imagenes.length}`
     );

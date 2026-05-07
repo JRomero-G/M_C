@@ -1,5 +1,5 @@
 // ========== CONFIGURACIÓN URL GLOBAL ==========
-const BACKEND_URL = "https://m-c-h5or.onrender.com/api"; /*URL del backend en linea */
+//const BACKEND_URL = "https://m-c-h5or.onrender.com/api"; /*URL del backend en linea */
 
 
 // Configuración global de la empresa

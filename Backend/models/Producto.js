@@ -1,4 +1,3 @@
-// models/Producto.js - VERSIÓN LIMPIA
 const mongoose = require("mongoose");
 
 // Esquema para imágenes (subdocumento)
@@ -51,9 +50,16 @@ const productoSchema = new mongoose.Schema(
       default: 0,
       min: [0, "El precio final no puede ser negativo"],
     },
+    //Controlamos el tipo de inventario para saber si es un producto
+    //con unidades únicas o con stock general
+    tipo_inventario:{
+      type: String,
+      enum: ["unico","serie"],
+      default: "serie", // Por defecto seran en serie
+    },
+    // El stock ya no es obligatorio porque puede haber un productos sin cantidades por ser unico
     stock: {
       type: Number,
-      required: [true, "El stock es obligatorio"],
       min: [0, "El stock no puede ser negativo"],
       default: 0,
     },
@@ -76,7 +82,7 @@ const productoSchema = new mongoose.Schema(
   }
 );
 
-// ========== MIDDLEWARE SIMPLIFICADO ==========
+// ========== MIDDLEWARE ==========
 productoSchema.pre("save", async function () {
   // Solo calcular si cambió precio_original o descuento
   if (this.isModified("precio_original") || this.isModified("descuento")) {
@@ -91,6 +97,10 @@ productoSchema.pre("save", async function () {
 
     this.precio_final = Math.round(this.precio_final * 100) / 100;
   }
+
+  if(this.isNew && this.tipo_inventario === "unico" && this.stock !== 1){
+    this.stock = 1; // Asegura que el stock sea 1 para productos únicos
+  }
 });
 
 // Índices
@@ -98,6 +108,7 @@ productoSchema.index({ nombre: "text", descripcion: "text" });
 productoSchema.index({ precio_final: 1 });
 productoSchema.index({ activo: 1 });
 productoSchema.index({ categoria: 1 });
+productoSchema.index({ tipo_inventario: 1 });
 
 // Métodos estáticos
 productoSchema.statics.findActivos = function () {
@@ -111,6 +122,11 @@ productoSchema.methods.formatearPrecio = function () {
 
 productoSchema.methods.tieneStock = function (cantidad = 1) {
   return this.stock >= cantidad;
+};
+
+//Cantas unidades estan disponibles
+productoSchema.methods.stockDisponible = function(){
+  return this.stock;
 };
 
 module.exports = mongoose.model("Producto", productoSchema);

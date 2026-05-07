@@ -195,7 +195,7 @@
                     <option value="">Todos</option>
                     <option value="sin-stock">Sin stock</option>
                     <option value="con-stock">Con stock</option>
-                     <option disabled>────────────</option>
+                    <option disabled>────────────</option>
                     <option value="mas-stock">
                       Ordenar: Mayor stock primero
                     </option>
@@ -227,6 +227,17 @@
                     <option value="baño">Baño</option>
                   </select>
                 </div>
+
+                <!--FILTRAR POR TIPO DE INVENTARIO-->
+                <div class="form-group">
+                  <label>Tipo de Inventario</label>
+                  <select id="filtro-tipo-inventario">
+                    <option value="">Todos</option>
+                    <option value="serie">📦 En Serie</option>
+                    <option value="unico">🪑 Pieza Única</option>
+                  </select>
+                </div>
+
               </div>
             </div>
             <div class="table-container" id="tabla-productos-container">
@@ -240,6 +251,7 @@
                     <th>Descuento</th>
                     <th>Precio Actual</th>
                     <th>Stock</th>
+                    <th>Inventario</th>
                     <th>Fecha Registro</th>
                     <th>Estado</th>
                     <th>Acciones</th>
@@ -275,6 +287,15 @@
                     <option value="baño">Baño</option>
                   </select>
                 </div>
+                
+                <div class="form-group">
+                  <label>Tipo de Inventario *</label>
+                  <select id="product-tipo-inventario" required>
+                    <option value="serie">📦 En Serie (múltiples unidades iguales)</option>
+                    <option value="unico">🪑 Pieza Única (stock = 1 automático)</option>
+                  </select>
+                </div>
+
               </div>
               <div class="form-row">
                 <div class="form-group">
@@ -305,6 +326,9 @@
               <div class="form-group">
                 <label>Stock Inicial *</label>
                 <input type="number" id="product-stock" required />
+                  <small class="form-text" id="nota-stock-registro">
+                    Para piezas únicas el stock se establece en 1 automáticamente
+                  </small>
               </div>
               <div class="form-group">
                 <label>Descripción</label>
@@ -372,6 +396,15 @@
                     <option value="baño">Baño</option>
                   </select>
                 </div>
+
+                <div class="form-group">
+                  <label>Tipo de Inventario</label>
+                  <select id="update-tipo-inventario">
+                    <option value="serie">📦 En Serie</option>
+                    <option value="unico">🪑 Pieza Única</option>
+                  </select>
+                </div>
+                
                 <div class="form-group">
                   <label>Precio Original</label>
                   <input
@@ -394,6 +427,9 @@
               <div class="form-group">
                 <label>Stock</label>
                 <input type="number" id="update-stock" />
+                <small class="form-text" id="nota-stock-actualizar" style="color:#6c757d;">
+                  Modifica la cantidad de unidades disponibles
+                </small>
               </div>
               <div class="form-group">
                 <label>Descripción</label>
@@ -649,7 +685,7 @@
     <script src="./Scripts/Auth-service.js"></script>
 
     <!-- Configuración después -->
-    <script src="./Scripts/Config.js"></script>
+    <script src="../../Scripts/Config.js"></script>
 
     <!-- Módulos de autenticación y utilidades -->
     <script src="./Scripts/Auth.js"></script>
@@ -662,7 +698,7 @@
     <script src="./Scripts/Pedidos.js"></script>
     <script src="./Scripts/Usuarios.js"></script>
 
-    <!-- Archivo global (que llamabas Extras.js) -->
+    <!-- Archivo global -->
     <script src="../../Scripts/Global.js"></script>
 
     <!-- Eventos y main -->

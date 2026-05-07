@@ -1,4 +1,4 @@
-// ========== GESTIÓN DE PRODUCTOS (SOLO ADMIN) VERSION 1==========
+// ========== GESTIÓN DE PRODUCTOS (SOLO ADMIN)==========
 
 // ============================================
 //     VARIABLES GLOBALES DE PAGINACIÓN DE PRODUCTOS
@@ -8,6 +8,8 @@ const limitePorPaginaProductos = 12;
 let totalPaginasProductos = 1;
 let productosCargados = [];
 let totalProductosBD = 0;
+// variable que almacena el stock extraido del producto antes de actualizar
+let stockOriginalProducto = 0;
 
 /**
  * Carga los productos desde el backend con paginación y filtros
@@ -40,6 +42,10 @@ async function cargarProductos() {
     }
     if (filtros.categoria) {
       queryString += `&categoria=${encodeURIComponent(filtros.categoria)}`;
+    }
+
+    if(filtros.tipo_inventario){
+      queryString += `&tipo_inventario=${encodeURIComponent(filtros.tipo_inventario)}`;
     }
     
     // Llamar al endpoint con paginación
@@ -126,6 +132,8 @@ async function obtenerProductosDelBackend() {
   return result.success ? result.productos : [];
 }
 
+//Problema: No se actaliza el tipo de inventario
+
 /**
  * Actualiza la tabla de productos con los datos cargados
  */
@@ -163,6 +171,11 @@ function actualizarTablaProductos(productos) {
       <td>${producto.descuento || 0}%</td>
       <td>HNL ${precioFinal.toFixed(2)}</td>
       <td>${producto.stock || 0}</td>
+      <td>                                                      
+        <span class="${producto.tipo_inventario === 'unico' ? 'badge-unico' : 'badge-serie'}">
+        ${producto.tipo_inventario === 'unico' ? '🪑 Único' : '📦 Serie'}
+        </span>
+      </td>
       <td>${fecha_de_registro || "N/A"}</td>
       <td><span class="${producto.activo !== false ? "success" : "danger"}">
           ${producto.activo !== false ? "Activo" : "Inactivo"}
@@ -176,11 +189,11 @@ function actualizarTablaProductos(productos) {
         ${
           producto.activo !== false
             ? `<button class="btn-danger btn-sm" onclick="confirmarDesactivarProducto('${producto._id}')">
-                 <i class="fas fa-ban"></i>
-               </button>`
+                <i class="fas fa-ban"></i>
+              </button>`
             : `<button class="btn-success btn-sm" onclick="confirmarActivarProducto('${producto._id}')">
-                 <i class="fas fa-check"></i>
-               </button>`
+                <i class="fas fa-check"></i>
+              </button>`
         }
       </td>
     `;
@@ -209,6 +222,7 @@ function obtenerFiltrosProductos() {
     estado: document.getElementById("filtro-estado-producto")?.value || "",
     stock: document.getElementById("filtro-stock")?.value || "",
     categoria: document.getElementById("filtro-categoria-producto")?.value || "",
+    tipo_inventario: document.getElementById("filtro-tipo-inventario")?.value || "",
   };
 }
 
@@ -224,7 +238,8 @@ function configurarFiltrosProductos() {
     "buscador-productos",
     "filtro-estado-producto", 
     "filtro-stock",
-    "filtro-categoria-producto"
+    "filtro-categoria-producto",
+    "filtro-tipo-inventario"
   ];
 
   ids.forEach(id => {
@@ -284,6 +299,7 @@ function obtenerDatosFormularioRegistro() {
     descripcion:
       document.getElementById("product-description")?.value.trim() || "",
     files: document.getElementById("product-images")?.files || [],
+    tipo_inventario: document.getElementById("product-tipo-inventario")?.value || "serie",
   };
 }
 
@@ -343,6 +359,7 @@ async function registrarProducto(e) {
       stock: formData.stock,
       imagenes: imagenesSubidas,
       categoria: formData.categoria,
+      tipo_inventario: formData.tipo_inventario,
     };
 
     const response = await fetchAdmin(`${window.BACKEND_URL}/productos`, {
@@ -377,12 +394,13 @@ async function registrarProducto(e) {
  */
 function mostrarMensajeExito(formData) {
   const precioFinal = formData.precioOriginal * (1 - formData.descuento / 100);
+  const tipo_inv_texto = formData.tipo_inventario === "unico" ? "Pieza Unica" : `${formData.stock} Unidades`
   alert(
     `✅ Producto "${formData.nombre}" registrado exitosamente!\n• ${
       formData.files.length
     } imágenes\n• Stock: ${
-      formData.stock
-    } unidades\n• Precio: HNL ${precioFinal.toFixed(2)}`
+      tipo_inv_texto
+    }\n• Precio: HNL ${precioFinal.toFixed(2)}`
   );
 }
 
@@ -523,9 +541,108 @@ function rellenarFormularioActualizar(producto) {
   const precioBase = producto.precio_original || 0;
   const desc = producto.descuento || 0;
   const precioConDescuento = precioBase * (1 - desc / 100);
-  document.getElementById("update-precio-actual").value =
-    precioConDescuento.toFixed(2);
+  document.getElementById("update-precio-actual").value = precioConDescuento.toFixed(2);
+  
+
+  const tipoSelect = document.getElementById("update-tipo-inventario");
+  if(tipoSelect){
+    tipoSelect.value = producto.tipo_inventario || "serie";
+  };
+
+  stockOriginalProducto = producto.stock || 0;
+  aplicarComportamientoStockActualizar(producto.tipo_inventario || "serie");
 }
+
+// ============================================
+//   COMPORTAMIENTO DINÁMICO DEL CAMPO STOCK
+// ============================================
+
+/**
+ * Controla el campo stock en el formulario de REGISTRO
+ * según el tipo de inventario seleccionado
+ */
+function aplicarComportamientoStockRegistro(tipo) {
+  const campoStock = document.getElementById("product-stock");
+  const notaStock = document.getElementById("nota-stock-registro");
+
+  if (!campoStock) return;
+
+  if (tipo === "unico") {
+    campoStock.value = 1;
+    campoStock.disabled = true;
+    campoStock.style.backgroundColor = "#e9ecef";
+    campoStock.style.cursor = "not-allowed";
+    if (notaStock) {
+      notaStock.textContent = "⚠️ Pieza única: stock fijado en 1 automáticamente";
+      notaStock.style.color = "#e67e22";
+    }
+  } else {
+    campoStock.value = "";
+    campoStock.disabled = false;
+    campoStock.style.backgroundColor = "";
+    campoStock.style.cursor = "";
+    if (notaStock) {
+      notaStock.textContent = "Ingresa la cantidad de unidades disponibles";
+      notaStock.style.color = "#6c757d";
+    }
+  }
+}
+
+/**
+ * Controla el campo stock en el formulario de ACTUALIZACIÓN
+ * según el tipo de inventario seleccionado
+ * Restaura el stock original del backend si vuelve a "serie"
+ */
+function aplicarComportamientoStockActualizar(tipo) {
+  const campoStock = document.getElementById("update-stock");
+  const notaStock = document.getElementById("nota-stock-actualizar");
+
+  if (!campoStock) return;
+
+  if (tipo === "unico") {
+    campoStock.value = 1;
+    campoStock.disabled = true;
+    campoStock.style.backgroundColor = "#e9ecef";
+    campoStock.style.cursor = "not-allowed";
+    if (notaStock) {
+      notaStock.textContent = "⚠️ Pieza única: stock fijado en 1 automáticamente";
+      notaStock.style.color = "#e67e22";
+    }
+  } else {
+    // Al volver a "serie" restaura el stock original que vino del backend
+    campoStock.value = stockOriginalProducto;
+    campoStock.disabled = false;
+    campoStock.style.backgroundColor = "";
+    campoStock.style.cursor = "";
+    if (notaStock) {
+      notaStock.textContent = `Stock restaurado al valor original: ${stockOriginalProducto} unidades`;
+      notaStock.style.color = "#27ae60";
+    }
+  }
+}
+
+/**
+ * Configura los listeners de tipo_inventario en ambos formularios
+ * Se llama una sola vez al cargar la página
+ */
+function configurarListenersTipoInventario() {
+  // ── FORMULARIO DE REGISTRO ──
+  const selectRegistro = document.getElementById("product-tipo-inventario");
+  if (selectRegistro) {
+    selectRegistro.addEventListener("change", (e) => {
+      aplicarComportamientoStockRegistro(e.target.value);
+    });
+  }
+
+  // ── FORMULARIO DE ACTUALIZACIÓN ──
+  const selectActualizar = document.getElementById("update-tipo-inventario");
+  if (selectActualizar) {
+    selectActualizar.addEventListener("change", (e) => {
+      aplicarComportamientoStockActualizar(e.target.value);
+    });
+  }
+}
+
 
 /**
  * Obtiene datos del formulario de actualización
@@ -542,6 +659,7 @@ function obtenerDatosFormularioActualizar() {
       document.getElementById("update-description")?.value.trim() || "",
     categoria: document.getElementById("update-categoria")?.value || "",
     files: document.getElementById("update-images")?.files || [],
+    tipoInventario: document.getElementById("update-tipo-inventario")?.value || "serie",
   };
 }
 
@@ -802,8 +920,16 @@ async function prepararDatosActualizacion(formData) {
     precio_original: formData.precioOriginal,
     descuento: formData.descuento,
     stock: formData.stock,
-    ria: formData.categoria,
+    categoria: formData.categoria,
+    tipo_inventario: formData.tipoInventario,
   };
+
+   // Debug temporal — eliminar después de confirmar
+  console.log("📤 Datos que se enviarán al backend:", {
+    tipo_inventario: updateData.tipo_inventario,
+    stock: updateData.stock,
+    nombre: updateData.nombre
+  });
 
   // OBTENER IMÁGENES ORIGINALES DIRECTAMENTE DE LA BD
   const idProducto = document.getElementById("update-id")?.value;
@@ -1271,7 +1397,7 @@ async function confirmarActivarProducto(id) {
 }
 
 /* =============================
-   IMÁGENES DEL PRODUCTO
+  IMÁGENES DEL PRODUCTO
 ============================= */
 
 function mostrarImagenesActualesProducto(imagenes, esRefresco = false) {
@@ -1623,7 +1749,10 @@ function actualizarContadorProductosDashboard() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", configurarFiltrosProductos);
+document.addEventListener("DOMContentLoaded", () => {
+  configurarFiltrosProductos();
+  configurarListenersTipoInventario();  
+});
 
 // Exportar funciones para uso global
 window.cargarProductos = cargarProductos;
@@ -1651,3 +1780,6 @@ window.actualizarControlesPaginacionProductos = actualizarControlesPaginacionPro
 window.irPaginaAnteriorProductos = irPaginaAnteriorProductos;
 window.irPaginaSiguienteProductos = irPaginaSiguienteProductos;
 window.irPaginaEspecificaProductos = irPaginaEspecificaProductos;
+window.configurarListenersTipoInventario = configurarListenersTipoInventario;
+window.aplicarComportamientoStockActualizar = aplicarComportamientoStockActualizar;
+window.aplicarComportamientoStockRegistro = aplicarComportamientoStockRegistro;

@@ -1,0 +1,83 @@
+/* ===== NOTIFICACIONES - CORE (Común para toda la web) ===== */
+:root {
+    /* Variables base - iguales para toda la web */
+    --notification-z-index: 10000;
+    --notification-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --notification-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    
+    /* Animaciones comunes */
+    --animation-slide-duration: 0.3s;
+    --animation-fade-duration: 0.3s;
+}
+
+/* Animaciones (compartidas) */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-20px); }
+}
+
+/* Estructura base (sin posicionamiento específico) */
+.carrito-notificacion {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-weight: 500;
+  font-family: var(--notification-font-family);
+  z-index: var(--notification-z-index);
+  box-shadow: var(--notification-shadow);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.carrito-notificacion i {
+  font-size: 18px;
+}
+
+.carrito-notificacion span {
+  flex: 1;
+}
+
+/* Tipos de notificación (comunes) */
+.carrito-notificacion.success {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.carrito-notificacion.error {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.carrito-notificacion.warning {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+
+.carrito-notificacion.info {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+/* Clases de animación */
+.notification-slide-in {
+  animation: slideInRight var(--animation-slide-duration) ease;
+}
+
+.notification-slide-out {
+  animation: slideOutRight var(--animation-slide-duration) ease;
+}

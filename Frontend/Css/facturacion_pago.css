@@ -359,6 +359,26 @@ margin-top: 20px;
     color: var(--azul-secundario);
 }
 
+.envio-opciones select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid var(--gray-light);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.envio-opciones select:hover {
+    border: solid var(--azul-secundario);
+}
+
+.envio-opciones select:focus {
+    outline: none;
+    border-color: var(--azul-secundario);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+
 .fila-resumen {
     display: flex;
     justify-content: space-between;
@@ -646,4 +666,479 @@ margin-top: 20px;
 
 .mensaje-exito i {
     font-size: 0.9rem;
+}
+
+/* ============================================
+     MODAL DE CONFIRMACIÓN DE PEDIDO
+     (Usando variables globales del sistema)
+   ============================================ */
+
+/* Modal principal - Fondo oscuro */
+.modal-confirmacion {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 20px;
+    animation: modalFadeIn 0.3s ease;
+}
+
+/* Contenedor del modal */
+.modal-confirmacion .modal-contenido {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    width: 100%;
+    max-width: 650px;
+    margin: 40px auto;
+    box-shadow: var(--sombra);
+    animation: modalSlideUp 0.4s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Header del modal */
+.modal-confirmacion .modal-header {
+    background: linear-gradient(135deg, var(--azul-principal) 0%, var(--azul-secundario) 100%);
+    color: var(--blanco);
+    padding: 25px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-confirmacion .modal-header h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal-confirmacion .modal-header h2 i {
+    font-size: 1.8rem;
+    color: var(--verde);
+}
+
+/* Botón cerrar */
+.modal-confirmacion .cerrar-modal {
+    background: none;
+    border: none;
+    color: var(--blanco);
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transicion);
+}
+
+.modal-confirmacion .cerrar-modal:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* Body del modal */
+.modal-confirmacion .modal-body {
+    padding: 30px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Scroll personalizado para el body - Usando tus colores */
+.modal-confirmacion .modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-confirmacion .modal-body::-webkit-scrollbar-track {
+    background: var(--azul-muy-claro);
+    border-radius: 10px;
+}
+
+.modal-confirmacion .modal-body::-webkit-scrollbar-thumb {
+    background: var(--azul-secundario);
+    border-radius: 10px;
+}
+
+.modal-confirmacion .modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--azul-principal);
+}
+
+/* Contenido de confirmación exitosa */
+.modal-confirmacion .confirmacion-exitosa {
+    text-align: center;
+}
+
+/* Icono de éxito */
+.modal-confirmacion .icono-exito {
+    background: linear-gradient(135deg, var(--verde) 0%, #27ae60 100%);
+    color: var(--blanco);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2.5rem;
+    box-shadow: 0 10px 25px -5px rgba(46, 204, 113, 0.3);
+    animation: iconoPulse 0.5s ease;
+}
+
+/* Número de pedido */
+.modal-confirmacion .pedido-id {
+    color: var(--azul-secundario);
+    font-weight: bold;
+    background: var(--azul-muy-claro);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 1rem;
+}
+
+.modal-confirmacion .mensaje-exito {
+    color: var(--verde);
+    font-size: 1.1rem;
+    margin: 15px 0;
+}
+
+/* Información de transferencia */
+.modal-confirmacion .info-transferencia {
+    background: linear-gradient(135deg, var(--gris-claro) 0%, var(--gris-medio) 100%);
+    border-radius: var(--radio);
+    padding: 20px;
+    margin: 25px 0;
+    text-align: left;
+    border: 1px solid var(--gris-medio);
+}
+
+.modal-confirmacion .info-transferencia h4 {
+    color: var(--azul-principal);
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-confirmacion .info-transferencia h4 i {
+    color: var(--azul-secundario);
+}
+
+/* Datos bancarios */
+.modal-confirmacion .datos-bancarios {
+    background: var(--blanco);
+    padding: 15px;
+    border-radius: var(--radio-sm);
+    margin: 15px 0;
+    border-left: 4px solid var(--azul-secundario);
+    box-shadow: var(--sombra-suave);
+}
+
+.modal-confirmacion .datos-bancarios p {
+    margin: 8px 0;
+    font-size: 0.95rem;
+}
+
+.modal-confirmacion .datos-bancarios strong {
+    color: var(--azul-principal);
+}
+
+/* Advertencia */
+.modal-confirmacion .advertencia {
+    background: #fff3cd;
+    color: #856404;
+    padding: 12px 15px;
+    border-radius: var(--radio-sm);
+    border: 1px solid var(--amarillo);
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+
+.modal-confirmacion .advertencia i {
+    margin-right: 8px;
+}
+
+/* Resumen de confirmación */
+.modal-confirmacion .resumen-confirmacion {
+    margin: 25px 0;
+    text-align: left;
+}
+
+.modal-confirmacion .resumen-confirmacion h4 {
+    color: var(--azul-principal);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+}
+
+.modal-confirmacion .resumen-detalles {
+    background: var(--gris-claro);
+    padding: 18px;
+    border-radius: var(--radio-sm);
+}
+
+.modal-confirmacion .resumen-linea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--gris-medio);
+}
+
+.modal-confirmacion .resumen-linea:last-child {
+    border-bottom: none;
+}
+
+.modal-confirmacion .resumen-linea span:first-child {
+    font-weight: 500;
+    color: var(--gris-oscuro);
+}
+
+.modal-confirmacion .resumen-linea span:last-child {
+    font-weight: 600;
+    color: var(--azul-principal);
+}
+
+/* Estado del pedido */
+.modal-confirmacion .estado-pedido {
+    background: var(--amarillo);
+    color: var(--azul-principal);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* Mensaje de recordatorio */
+.modal-confirmacion .mensaje-recordatorio {
+    background: #fff3cd;
+    border: 2px solid var(--amarillo);
+    border-radius: var(--radio-sm);
+    padding: 15px;
+    margin: 20px 0;
+    text-align: left;
+    animation: shakeWarning 0.5s ease;
+}
+
+.modal-confirmacion .recordatorio-contenido {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.modal-confirmacion .recordatorio-contenido i {
+    color: #856404;
+    font-size: 1.5rem;
+    margin-top: 2px;
+}
+
+.modal-confirmacion .recordatorio-contenido strong {
+    color: #856404;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.modal-confirmacion .recordatorio-contenido p {
+    color: #856404;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.modal-confirmacion .recordatorio-contenido small {
+    color: #856404;
+    opacity: 0.8;
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Botones de acción */
+.modal-confirmacion .acciones-confirmacion {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.modal-confirmacion .btn-pdf {
+    background: linear-gradient(135deg, var(--rojo) 0%, #c0392b 100%);
+    color: var(--blanco);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: var(--transicion);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.modal-confirmacion .btn-pdf:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+}
+
+.modal-confirmacion .btn-pdf:active {
+    transform: translateY(0);
+}
+
+.modal-confirmacion .btn-inicio {
+    background: linear-gradient(135deg, var(--azul-secundario) 0%, #2980b9 100%);
+    color: var(--blanco);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: var(--transicion);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.modal-confirmacion .btn-inicio:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+}
+
+.modal-confirmacion .btn-inicio:active {
+    transform: translateY(0);
+}
+
+/* Animaciones del modal */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes iconoPulse {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes shakeWarning {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Responsive del modal - Usando tus breakpoints */
+@media (max-width: 768px) {
+    .modal-confirmacion {
+        padding: 10px;
+        align-items: center;
+    }
+    
+    .modal-confirmacion .modal-contenido {
+        margin: 20px auto;
+        max-width: 95%;
+    }
+    
+    .modal-confirmacion .modal-header {
+        padding: 20px;
+    }
+    
+    .modal-confirmacion .modal-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .modal-confirmacion .modal-body {
+        padding: 20px;
+        max-height: 75vh;
+    }
+    
+    .modal-confirmacion .icono-exito {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+    
+    .modal-confirmacion .resumen-linea {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .modal-confirmacion .acciones-confirmacion {
+        flex-direction: column;
+    }
+    
+    .modal-confirmacion .btn-pdf,
+    .modal-confirmacion .btn-inicio {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .modal-confirmacion .recordatorio-contenido {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-confirmacion .modal-header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .modal-confirmacion .modal-body {
+        padding: 15px;
+    }
+    
+    .modal-confirmacion .info-transferencia {
+        padding: 15px;
+    }
+    
+    .modal-confirmacion .datos-bancarios p {
+        font-size: 0.85rem;
+        word-break: break-word;
+    }
 }

@@ -4,11 +4,21 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // 🔥 IMPORTANTE: Actualizar el badge del carrito
   actualizarContadorCarritoGlobal();
+
+  // Verificar si hay productos con stock bajo al cargar
+  setTimeout(() => {
+    const productosStockBajo = carrito.filter(p => p.stock <= 3 && p.stock > 0);
+    if (productosStockBajo.length > 0 && carrito.length > 0) {
+      mostrarNotificacionCarrito('warning', 
+        `Atención: ${productosStockBajo.length} producto(s) tienen stock limitado. ¡Apresúrate!`
+      );
+    }
+  }, 500);
+
 });
 
 // ------------------ VARIABLES GLOBALES ------------------
 let carrito = [];
-let costo_envio = parseFloat(localStorage.getItem("costo_envio")) || 0;
 
 
 
@@ -20,6 +30,7 @@ document.getElementById("btn-seguir-Comprando").addEventListener("click", functi
   document.getElementById("btn-seguir-Comprando2").addEventListener("click", function () {
     window.location.href = "../Index.html"
   })
+
 // Función para actualizar el badge global (desde index.js)
 function actualizarContadorCarritoGlobal() {
   const totalProductos = carrito.reduce((total, producto) => total + producto.cantidad, 0);
@@ -41,7 +52,6 @@ function inicializarCarrito() {
   renderizarCarrito();
   configurarEventos();
   actualizarResumen();
-  configurarSelectEnvio();
 }
 
 // ------------------ RENDERIZAR CARRITO ------------------
@@ -98,7 +108,6 @@ function crearElementoProducto(producto, index) {
       <div class="producto-nombre">${producto.nombre}</div>
       <div class="producto-detalles">
         <span>Categoría: ${categoria}</span>
-        <span class="producto-desc">${descripcion.substring(0, 60)}${descripcion.length > 60 ? '...' : ''}</span>
       </div>
       <div class="producto-precio-unitario">
         HNL ${producto.precio.toFixed(2)} c/u
@@ -187,17 +196,6 @@ function configurarEventos() {
     }
   });
   
-  // Evento para envío
-  const envio = document.getElementById("tipoEnvio");
-  const opcion1 = document.getElementById("Recoger");
-  const opcion2 = document.getElementById("Envio-estandar");
-  const opcion3 = document.getElementById("Envio-express");
-
-
-  if (envio) {
-    envio.addEventListener("change", actualizarResumen);
-  }
-  
   // Evento para continuar al pago
   const btnPago = document.getElementById("continuarPago");
   if (btnPago) {
@@ -211,9 +209,13 @@ function configurarEventos() {
   }
 }
 
-// ------------------ ELIMINAR PRODUCTO ------------------
+// Reemplaza la función 'eliminarProducto' actual (línea ~165-180)
 function eliminarProducto(id) {
-  if (!confirm("¿Estás seguro de eliminar este producto del carrito?")) {
+  // Obtener nombre del producto antes de eliminar
+  const producto = carrito.find((p) => p.id === id);
+  const nombreProducto = producto ? producto.nombre : 'Producto';
+  
+  if (!confirm(`¿Estás seguro de eliminar "${nombreProducto}" del carrito?`)) {
     return;
   }
   
@@ -228,7 +230,8 @@ function eliminarProducto(id) {
   actualizarResumen();
   actualizarContadorCarritoGlobal();
   
-  mostrarMensaje("Producto eliminado del carrito", "success");
+  // Usar nuevo sistema de notificaciones
+  mostrarNotificacionCarrito('success', `✓ ${nombreProducto} eliminado del carrito`);
 }
 
 // ------------------ CAMBIAR CANTIDAD ------------------
@@ -244,12 +247,12 @@ function cambiarCantidad(id, delta) {
   
   // Validar límites
   if (nuevaCantidad < 1) {
-    mostrarMensaje("La cantidad mínima es 1", "warning");
+    mostrarNotificacionCarrito('warning', '⚠️ La cantidad mínima es 1');
     return;
   }
   
   if (nuevaCantidad > producto.stock) {
-    mostrarMensaje(`No hay más unidades disponibles. Máximo: ${producto.stock}`, "warning");
+    mostrarNotificacionCarrito('warning', `⚠️ Stock limitado. Máximo disponible: ${producto.stock} unidades`);
     return;
   }
   
@@ -262,6 +265,8 @@ function actualizarCantidadProducto(id, nuevaCantidad) {
   const producto = carrito.find((p) => p.id === id);
   
   if (!producto) return;
+
+  const cantidadAnterior = producto.cantidad;
   
   // Actualizar cantidad
   producto.cantidad = nuevaCantidad;
@@ -304,13 +309,20 @@ function actualizarCantidadProducto(id, nuevaCantidad) {
   actualizarResumen();
   actualizarContadorCarritoGlobal();
   
-  mostrarMensaje(`Cantidad actualizada a ${nuevaCantidad}`, "info");
+  // Mostrar notificación solo si realmente cambió
+  if (cantidadAnterior !== nuevaCantidad) {
+    if (nuevaCantidad > cantidadAnterior) {
+      mostrarNotificacionCarrito('success', `✓ Cantidad aumentada a ${nuevaCantidad} unidades`);
+    } else {
+      mostrarNotificacionCarrito('info', `Cantidad reducida a ${nuevaCantidad} unidades`);
+    }
+  }
 }
 
 // ------------------ VACIAR CARRITO ------------------
 function vaciarCarrito() {
   if (carrito.length === 0) {
-    mostrarMensaje("El carrito ya está vacío", "info");
+    mostrarNotificacionCarrito('success', 'Carrito ya está vacío');
     return;
   }
   
@@ -326,7 +338,7 @@ function vaciarCarrito() {
   actualizarResumen();
   actualizarContadorCarritoGlobal();
   
-  mostrarMensaje("Carrito vaciado correctamente", "success");
+  mostrarNotificacionCarrito('success', '🗑️ Carrito vaciado correctamente');
 }
 
 // ------------------ ACTUALIZAR RESUMEN ------------------
@@ -336,29 +348,17 @@ function actualizarResumen() {
     return total + (producto.precio * producto.cantidad);
   }, 0);
   
-  // Obtener costo de envío del select
-  const envioSelect = document.getElementById("tipoEnvio");
-  if (envioSelect) {
-    // Actualizar variable global con el valor seleccionado
-    costo_envio = parseFloat(envioSelect.value) || 0;
-    
-    // Guardar en localStorage para pasarlo a facturación
-    localStorage.setItem("costo_envio", costo_envio);
-    
-    console.log("📦 Costo de envío actualizado:", costo_envio, "tipo:", envioSelect.options[envioSelect.selectedIndex]?.text);
-  }
   
   // Calcular impuestos (15% en Honduras)
   const impuestos = subtotal * 0.15;
   
   // Calcular total
-  const total = subtotal + costo_envio + impuestos;
+  const total = subtotal + impuestos;
   
   // Actualizar elementos en el DOM
   const elementos = {
     "subtotal": `HNL ${subtotal.toFixed(2)}`,
     "impuestos": `HNL ${impuestos.toFixed(2)}`,
-    "envio": `HNL ${costo_envio.toFixed(2)}`,
     "total": `HNL ${total.toFixed(2)}`
   };
   
@@ -380,169 +380,117 @@ function actualizarResumen() {
 // ------------------ CONTINUAR AL PAGO ------------------
 function continuarPago() {
   if (carrito.length === 0) {
-    mostrarMensaje("No hay productos en el carrito", "warning");
+    mostrarNotificacionCarrito('warning', 'No hay productos en el carrito');
     return;
   }
   
   // Verificar stock antes de proceder
   const sinStock = carrito.filter(p => p.cantidad > p.stock);
   if (sinStock.length > 0) {
-    mostrarMensaje("Algunos productos no tienen suficiente stock", "error");
+    mostrarNotificacionCarrito('error', 'Algunos productos no tienen suficiente stock');
+    return;
+  }
+   // Verificar stock antes de proceder
+  const productosSinStock = carrito.filter(p => p.cantidad > p.stock);
+  if (productosSinStock.length > 0) {
+    const nombresProductos = productosSinStock.map(p => p.nombre).join(', ');
+    mostrarNotificacionCarrito('error', ` Productos sin stock suficiente: ${nombresProductos}`);
     return;
   }
   
-  // Obtener tipo de envío seleccionado
-  const envioSelect = document.getElementById("tipoEnvio");
-  let tipoEnvioTexto = "Recoger en tienda";
+  // Mostrar notificación de carga
+  const notifCarga = mostrarNotificacionCarga('🔄 Procesando pedido...');
   
-  if (envioSelect) {
-    const opcionSeleccionada = envioSelect.options[envioSelect.selectedIndex];
-    tipoEnvioTexto = opcionSeleccionada ? opcionSeleccionada.text : "Recoger en tienda";
-    
-    // Guardar también el tipo de envío para facturación
-    localStorage.setItem("tipo_envio", tipoEnvioTexto);
+   // Verificar productos con stock bajo
+  const productosStockBajo = carrito.filter(p => p.stock <= 3 && p.stock > 0);
+  if (productosStockBajo.length > 0) {
+    setTimeout(() => {
+      ocultarNotificacionCarga(notifCarga);
+      //mostrarNotificacionCarrito('warning', `Algunos productos tienen stock limitado: ${productosStockBajo.map(p => p.nombre).join(', ')}`);
+    }, 500);
   }
-  
-  // Mostrar mensaje con el tipo de envío
-  mostrarMensaje(`Redirigiendo a facturación (${tipoEnvioTexto})...`, "success");
-  
-  // Guardar carrito y costo de envío en localStorage
+
+  // Guardar carrito en localStorage
   localStorage.setItem("carrito", JSON.stringify(carrito));
-  localStorage.setItem("costo_envio", costo_envio.toString());
   
   console.log("🛒 Datos guardados para facturación:", {
     carrito: carrito.length,
-    costo_envio: costo_envio,
-    tipo_envio: tipoEnvioTexto
   });
   
-  // Redirigir después de 1 segundo
+  // Mostrar notificación de éxito y redirigir
   setTimeout(() => {
-    window.location.href = "../Pages/facturacion_pago.html";
-  }, 1000);
+    ocultarNotificacionCarga(notifCarga);
+    mostrarNotificacionCarrito('success', `✅ Redirigiendo a facturación... (${carrito.length} productos)`);
+    
+    // Redirigir después de 1 segundo
+    setTimeout(() => {
+      window.location.href = "../Pages/facturacion_pago.html";
+    }, 1000);
+  }, 800);
 }
 
-function configurarSelectEnvio() {
-  const envioSelect = document.getElementById("tipoEnvio");
-  const opcion1 = document.getElementById("Recoger");
-  const opcion2 = document.getElementById("Envio-estandar");
-  const opcion3 = document.getElementById("Envio-express");
+
+// ========== SISTEMA DE NOTIFICACIONES UNIFICADO ==========
+function mostrarNotificacionCarrito(tipo = 'info', mensaje = null) {
+  // Eliminar notificaciones existentes para evitar acumulación
+  const notificacionesExistentes = document.querySelectorAll('.carrito-notificacion');
+  notificacionesExistentes.forEach(notif => notif.remove());
   
-  if (envioSelect) {
-    // Configurar valores para cada opción
-    if (opcion1) opcion1.value = "0";
-    if (opcion2) opcion2.value = "670";
-    if (opcion3) opcion3.value = "1400";
-    
-    // Establecer valor por defecto si no hay uno guardado
-    if (costo_envio === 0) {
-      envioSelect.value = "0"; // Recoger en tienda por defecto
-    } else {
-      envioSelect.value = costo_envio.toString();
+  // Mapeo de tipos a configuraciones
+  const config = {
+    success: {
+      icono: '<i class="fas fa-check-circle"></i>',
+      defaultMsg: 'Operación completada exitosamente'
+    },
+    error: {
+      icono: '<i class="fas fa-exclamation-triangle"></i>',
+      defaultMsg: 'Error al procesar la solicitud'
+    },
+    warning: {
+      icono: '<i class="fas fa-exclamation-triangle"></i>',
+      defaultMsg: 'Verifica la información'
+    },
+    info: {
+      icono: '<i class="fas fa-info-circle"></i>',
+      defaultMsg: 'Información actualizada'
     }
-    
-    // Evento para actualizar cuando cambia la selección
-    envioSelect.addEventListener("change", function() {
-      console.log("🔄 Envío cambiado a:", this.value, "opción:", this.options[this.selectedIndex]?.text);
-      costo_envio = parseFloat(this.value) || 0;
-      localStorage.setItem("costo_envio", costo_envio.toString());
-      actualizarResumen();
-    });
-    
-    // Llamar a actualizarResumen inicialmente
-    actualizarResumen();
-  }
-}
-
-// ------------------ MENSAJES ------------------
-function mostrarMensaje(mensaje, tipo = "info") {
-  // Remover mensajes anteriores
-  const mensajesAnteriores = document.querySelectorAll('.mensaje-flotante');
-  mensajesAnteriores.forEach(msg => msg.remove());
+  };
   
-  // Crear nuevo mensaje
-  const div = document.createElement("div");
-  div.className = `mensaje-flotante mensaje-${tipo}`;
-  div.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 12px 20px;
-    background: ${tipo === 'success' ? '#2ecc71' : 
-                 tipo === 'error' ? '#e74c3c' : 
-                 tipo === 'warning' ? '#f39c12' : '#3498db'};
-    color: white;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 1000;
-    font-weight: 500;
-    animation: slideIn 0.3s ease-out;
-  `;
+  const cfg = config[tipo] || config.info;
+  const texto = mensaje || cfg.defaultMsg;
   
-  // Agregar icono según tipo
-  const icono = tipo === 'success' ? 'fa-check-circle' :
-                tipo === 'error' ? 'fa-exclamation-circle' :
-                tipo === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+  // Crear notificación
+  const notificacion = document.createElement('div');
+  notificacion.className = `carrito-notificacion ${tipo}`;
+  notificacion.innerHTML = `${cfg.icono}<span>${texto}</span>`;
   
-  div.innerHTML = `<i class="fas ${icono}"></i> ${mensaje}`;
+  document.body.appendChild(notificacion);
   
-  document.body.appendChild(div);
-  
-  // Eliminar después de 3 segundos
+  // Auto-eliminar después de 3 segundos
   setTimeout(() => {
-    div.style.animation = 'slideOut 0.3s ease-out';
-    setTimeout(() => div.remove(), 300);
+    if (notificacion && notificacion.parentNode) {
+      notificacion.style.animation = 'slideOutRight 0.3s ease';
+      setTimeout(() => {
+        if (notificacion && notificacion.parentNode) {
+          notificacion.remove();
+        }
+      }, 300);
+    }
   }, 3000);
 }
 
-// Agregar estilos CSS para animaciones
-if (!document.querySelector('#estilos-mensajes')) {
-  const estilo = document.createElement('style');
-  estilo.id = 'estilos-mensajes';
-  estilo.textContent = `
-    @keyframes slideIn {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-    
-    @keyframes slideOut {
-      from {
-        transform: translateX(0);
-        opacity: 1;
-      }
-      to {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-    }
-    
-    .stock-bajo {
-      color: #e74c3c;
-      font-weight: bold;
-    }
-    
-    .producto-subtotal {
-      margin-top: 8px;
-      font-size: 14px;
-      color: #2c3e50;
-    }
-    
-    .producto-desc {
-      font-size: 13px;
-      color: #7f8c8d;
-      margin-top: 4px;
-    }
-    
-    .cantidad-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed !important;
-    }
-  `;
-  document.head.appendChild(estilo);
+// Función para notificaciones de carga (operaciones asíncronas)
+function mostrarNotificacionCarga(mensaje = 'Procesando...') {
+  const notificacion = document.createElement('div');
+  notificacion.className = 'carrito-notificacion info';
+  notificacion.innerHTML = `<i class="fas fa-spinner fa-pulse"></i><span>${mensaje}</span>`;
+  document.body.appendChild(notificacion);
+  return notificacion;
+}
+
+function ocultarNotificacionCarga(notificacion) {
+  if (notificacion && notificacion.parentNode) {
+    notificacion.style.animation = 'slideOutRight 0.3s ease';
+    setTimeout(() => notificacion.remove(), 300);
+  }
 }

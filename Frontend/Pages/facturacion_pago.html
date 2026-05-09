@@ -6,9 +6,9 @@
     <title>Facturación</title>
 
     <!-- Íconos -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     <link rel="stylesheet" href="../Css/facturacion_pago.css">
+    <link rel="stylesheet" href="../Css/Notificaciones/Notificacion-Principal.css" />
 </head>
 
 <body>
@@ -123,8 +123,14 @@
             </div>
 
             <div class="fila-resumen">
-                <span>Envío:</span>
-                <span id="resumenEnvio">$0.00</span>
+                    <span>Envío</span>
+                    <div class="envio-opciones">
+                        <select id="tipoEnvio">
+                        <option id="Recoger" value="0">Recoger en tienda (Gratis)</option>
+                        <option id= "Envio-estandar" value="">Envío estándar (HN 670)</option>
+                        <option id="Envio-express" value="">Envío express (HN 1400)</option>
+                        </select>
+                    </div>
             </div>
 
             <div class="fila-resumen">
@@ -138,7 +144,8 @@
             </div>
         </section>
     </section>
-    
+
+<script src="../Scripts/Config.js"></script>
 <script src="../Scripts/Global.js"></script>
 <script src="../Scripts/Facturacion.js"></script>
 

@@ -1,0 +1,38 @@
+/* ===== NOTIFICACIONES - PARTE PÚBLICA ===== */
+:root {
+    /* Posición para usuarios normales */
+    --notification-public-bottom: 20px;
+    --notification-public-right: 20px;
+}
+
+/* Posicionamiento público */
+.carrito-notificacion {
+    bottom: var(--notification-public-bottom);
+    right: var(--notification-public-right);
+}
+
+/* Responsive para público */
+@media (max-width: 768px) {
+    .carrito-notificacion {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+/* Estilos específicos para público */
+.carrito-notificacion {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.carrito-notificacion:hover {
+    transform: scale(1.02);
+}
+
+/* Animación de entrada suave para público */
+.carrito-notificacion {
+    animation: slideInRight 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}

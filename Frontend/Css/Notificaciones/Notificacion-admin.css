@@ -1,0 +1,88 @@
+/* ===== NOTIFICACIONES - PANEL ADMIN ===== */
+:root {
+    /* Posición para admin (diferente) */
+    --notification-admin-top: 80px;
+    --notification-admin-right: 20px;
+    
+    /* Tamaños más grandes para admin */
+    --notification-admin-padding: 16px 28px;
+    --notification-admin-font-size: 15px;
+    --notification-admin-icon-size: 20px;
+    --notification-admin-border-radius: 8px;
+    
+    /* Mayor duración en admin */
+    --notification-admin-duration: 4000ms;
+}
+
+/* Contexto específico para admin */
+.admin-area .carrito-notificacion {
+    top: var(--notification-admin-top);
+    right: var(--notification-admin-right);
+    bottom: auto;
+    padding: var(--notification-admin-padding);
+    font-size: var(--notification-admin-font-size);
+    border-radius: var(--notification-admin-border-radius);
+}
+
+.admin-area .carrito-notificacion i {
+    font-size: var(--notification-admin-icon-size);
+}
+
+/* Múltiples notificaciones apiladas en admin */
+.admin-area .carrito-notificacion {
+    margin-bottom: 10px;
+}
+
+.admin-area .carrito-notificacion:not(:last-child) {
+    position: relative;
+    margin-top: -10px;
+}
+
+/* Colores más sobrios para admin */
+.admin-area .carrito-notificacion.success {
+    background: linear-gradient(135deg, #27ae60, #229954);
+}
+
+.admin-area .carrito-notificacion.error {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+}
+
+.admin-area .carrito-notificacion.warning {
+    background: linear-gradient(135deg, #d4ac0d, #b7950b);
+}
+
+/* Notificaciones persistentes para admin */
+.carrito-notificacion.persistent {
+    cursor: pointer;
+    padding-right: 40px;
+}
+
+.carrito-notificacion.persistent::after {
+    content: '✕';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.carrito-notificacion.persistent:hover::after {
+    opacity: 1;
+}
+
+/* Para dispositivos móviles en admin */
+@media (max-width: 768px) {
+    .admin-area .carrito-notificacion {
+        top: 70px;
+        right: 10px;
+        left: 10px;
+    }
+}
+
+/* Notificaciones de acciones críticas en admin */
+.carrito-notificacion.critical {
+    background: linear-gradient(135deg, #922b21, #641e16);
+    border-left: 4px solid #ff0000;
+    font-weight: bold;
+}

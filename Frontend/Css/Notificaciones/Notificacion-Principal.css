@@ -1,0 +1,9 @@
+/* ===== SISTEMA UNIFICADO DE NOTIFICACIONES ===== */
+@import 'Notificaciones_Core.css';
+@import 'Notificacion-publica.css';
+@import 'Notificacion-admin.css';
+
+/* Clase helper para detectar contexto */
+body.admin-area .carrito-notificacion {
+    /* Sobrescribe estilos de público automáticamente */
+}

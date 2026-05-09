@@ -10,7 +10,7 @@
   --verde-hover: #27ae60;
   --verde-botón: #1ca807;
   --rojo-error: #e74c3c;
-  --amarillo-alerta: #f39c12;
+  --amarillo-alerta: linear-gradient(135deg, #ffd700, #ff8c00);
   --morado-details: #9b59b6;
   --morado-hover: #8e44ad;
   
@@ -39,7 +39,7 @@
   --overlay-hover: rgba(52, 152, 219, 0.3);
   
   /* Sombras */
-  --sombra-suave: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --sombra-suave: 0 4px 12px rgba(0, 0, 0, 0.2);
   --sombra-media: 0 8px 25px rgba(0, 0, 0, 0.15);
   --sombra-botón: 0 4px 10px rgba(52, 152, 219, 0.3);
   --sombra-morada: 0 4px 12px rgba(155, 89, 182, 0.3);
@@ -503,12 +503,59 @@ body {
   top: 10px;
   left: 10px;
   background: var(--amarillo-alerta);
-  color: var(--texto-blanco);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
+  color: white;
+  font-size: 0.7rem;
   font-weight: bold;
-  z-index: 2;
+  padding: 5px 10px;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 10;
+  font-family: 'Segoe UI', sans-serif;
+  letter-spacing: 1px;
+}
+
+/* ===== NUEVOS ESTILOS PARA PRODUCTOS TIPO "ÚNICO" ===== */
+
+/* Badge para productos únicos */
+.unico-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--amarillo-alerta);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 10;
+  font-family: 'Segoe UI', sans-serif;
+  letter-spacing: 1px;
+}
+
+/* Mensaje para productos únicos (reemplaza al selector de cantidad) */
+.producto-unico-mensaje {
+  text-align: center;
+  padding: 12px 10px;
+  margin: 15px 0;
+  background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #b8860b;
+  border: 1px solid #ffd966;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px; /* Misma altura que el selector de cantidad para mantener simetría */
+  box-sizing: border-box;
+  order: 7; /* Mismo orden que .product-cantidad */
+}
+
+.producto-unico-mensaje i {
+  color: #ffc107;
+  font-size: 1rem;
 }
 
 /* Cantidad */

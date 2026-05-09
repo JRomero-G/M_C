@@ -11,7 +11,7 @@
     --light: #f8f9fa;
     --dark: #212529;
     --gray: #6c757d;
-    --gray-light: #e9ecef;
+    --gray-light: #d2d5d7;
     --gray-lighter: #f5f7fa;
     --border-radius: 12px;
     --border-radius-sm: 8px;
@@ -113,7 +113,26 @@ body {
     display: flex;
     flex-direction: column;
     max-height: 600px; /* Altura máxima fija */
-    overflow: hidden; /* Oculta el desbordamiento */
+    overflow-x: hidden; /* Oculta el desbordamiento */
+    overflow-y: auto;
+}
+.productos-contenedor::-webkit-scrollbar {
+    width: 8px; /* Oculta el scrollbar en WebKit */
+  }
+
+
+.productos-contenedor::-webkit-scrollbar-track {
+    background: var(--gray-light);
+    border-radius: 4px;
+}
+
+.productos-contenedor::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+.productos-contenedor::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
 }
 
 /* Propiedades para el scroll */
@@ -121,25 +140,6 @@ body {
     flex: 1;
     overflow-y: auto; /* Scroll vertical automático cuando hay muchos productos */
     padding: 25px;
-}
-
-/* Personalización del scrollbar */
-.productos-lista::-webkit-scrollbar {
-    width: 8px;
-}
-
-.productos-lista::-webkit-scrollbar-track {
-    background: var(--gray-lighter);
-    border-radius: 4px;
-}
-
-.productos-lista::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 4px;
-}
-
-.productos-lista::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-dark);
 }
 
 /* Estado carrito vacío */
@@ -368,21 +368,6 @@ body {
 .valor {
     font-weight: 600;
     color: var(--dark);
-}
-
-.envio-opciones select {
-    width: 100%;
-    padding: 10px 15px;
-    border: 2px solid var(--gray-light);
-    border-radius: var(--border-radius-sm);
-    font-size: 0.9rem;
-    transition: var(--transition);
-}
-
-.envio-opciones select:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
 }
 
 /* Botones de acción */

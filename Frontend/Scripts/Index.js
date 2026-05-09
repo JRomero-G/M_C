@@ -63,6 +63,10 @@ function renderizarProductos(productos) {
       ? Math.round(producto.descuento)
       : 0;
 
+    // Determinar el tipo de inventario
+    const tipoInventario = producto.tipo_inventario || "serie"; // Por defecto "serie" si no viene especificado
+    const esProductoUnico = tipoInventario === "unico";
+
     // Obtener primera imagen como thumbnail
     const imagenPrincipal =
       producto.imagenes && producto.imagenes.length > 0
@@ -84,6 +88,67 @@ function renderizarProductos(productos) {
     tarjeta.setAttribute("data-categoria", producto.categoria || "General");
     tarjeta.id = tieneDescuento ? "Trajeta-descuento" : "tarjeta-normal";
 
+    // Construir la sección de badges según el tipo de inventario
+    let badgesSection = '';
+    
+    if (esProductoUnico) {
+      // Productos únicos: solo badge de "PIEZA ÚNICA"
+      badgesSection = `
+        <div class="unico-badge">PIEZA ÚNICA</div>
+      `;
+    } else {
+      // Productos tipo "serie": badges normales
+      const agotadoBadge = producto.stock <= 0 ? '<div class="agotado-badge">AGOTADO</div>' : '';
+      const bajoStockBadge = (producto.stock > 0 && producto.stock <= 3) ? '<div class="bajo-stock-badge">ÚLTIMAS UNIDADES</div>' : '';
+      badgesSection = agotadoBadge + bajoStockBadge;
+    }
+
+    // Construir la sección de cantidad/mensaje según el tipo de inventario
+    let cantidadSection = '';
+    
+    if (tipoInventario === "unico") {
+      // Para productos únicos: mostrar mensaje centrado en lugar del selector de cantidad
+      cantidadSection = `
+        <section class="producto-unico-mensaje">
+          <i class="fas fa-star"></i> Pieza de Diseño Único
+        </section>
+      `;
+    } else {
+      // Para productos tipo "serie": mostrar selector de cantidad normal
+      cantidadSection = `
+        <section class="product-cantidad" ${producto.stock <= 0 ? 'style="display:none;"' : ""}>
+          <button class="cantidad-btn" onclick="cambiarCantidad(this, -1)">
+            <i class="fas fa-minus"></i>
+          </button>
+          <input type="number" value="1" min="1" max="${producto.stock}" readonly class="cantidad-input" />
+          <button class="cantidad-btn" onclick="cambiarCantidad(this, 1)" ${producto.stock <= 1 ? "disabled" : ""}>
+            <i class="fas fa-plus"></i>
+          </button>
+        </section>
+      `;
+    }
+
+     // Construir la sección de stock según el tipo de inventario
+    let stockSection = '';
+    if (esProductoUnico) {
+      // Productos únicos: mensaje personalizado sin número de unidades
+      stockSection = `
+
+      `;
+    } else {
+      // Productos tipo "serie": mostrar número de unidades disponibles
+      stockSection = `
+        <section class="product-stock">
+          <i class="fas fa-boxes"></i> 
+          <span class="${producto.stock > 0 ? "stock-disponible" : "stock-agotado"}">
+            ${producto.stock > 0
+              ? `${producto.stock} unidades disponibles`
+              : "Agotado"}
+          </span>
+        </section>
+      `;
+    }
+    
     tarjeta.innerHTML = `
       <section class="product-image-container">
         <img src="${imagenPrincipal}" alt="${producto.nombre}" loading="lazy" />
@@ -94,12 +159,7 @@ function renderizarProductos(productos) {
             producto.imagenes?.length || 0
           })
         </section>
-        ${producto.stock <= 0 ? '<div class="agotado-badge">AGOTADO</div>' : ""}
-        ${
-          producto.stock > 0 && producto.stock <= 3
-            ? '<div class="bajo-stock-badge">ÚLTIMAS UNIDADES</div>'
-            : ""
-        }
+        ${badgesSection}
       </section>
       <section class="product-informacion">
         <h3 class="product-nombre">${producto.nombre}</h3>
@@ -107,15 +167,15 @@ function renderizarProductos(productos) {
           <i class="fas fa-tag"></i> ${producto.categoria || "General"}
         </p>
         <p class="product-descripcion-corta">
-  ${
-    producto.descripcion
-      ? producto.descripcion.substring(0, 100) + "..."
-      : "Producto de calidad"
-  }
-</p>
-<a class="btn-ver-detalles" onclick="verDetallesCompletos('${producto._id}')">
-  <i class="fas fa-eye"></i> Ver detalles completos
-</a>
+          ${
+            producto.descripcion
+              ? producto.descripcion.substring(0, 100) + "..."
+              : "Producto de calidad"
+          }
+        </p>
+        <a class="btn-ver-detalles" onclick="verDetallesCompletos('${producto._id}')">
+          <i class="fas fa-eye"></i> Ver detalles completos
+        </a>
         
         <section class="product-precio">
           ${
@@ -133,39 +193,13 @@ function renderizarProductos(productos) {
           }
           <span class="product-price-actual">
             HNL ${precioFinal.toFixed(2)}
-           
-          </span>
-        </section>
-        
-        <section class="product-stock">
-          <i class="fas fa-boxes"></i> 
-          <span class="${
-            producto.stock > 0 ? "stock-disponible" : "stock-agotado"
-          }">
-            ${
-              producto.stock > 0
-                ? `${producto.stock} unidades disponibles`
-                : "Agotado"
-            }
+          
           </span>
         </section>
 
-        <!-- SELECTOR DE CANTIDAD -->
-        <section class="product-cantidad" ${
-          producto.stock <= 0 ? 'style="display:none;"' : ""
-        }>
-          <button class="cantidad-btn" onclick="cambiarCantidad(this, -1)">
-            <i class="fas fa-minus"></i>
-          </button>
-          <input type="number" value="1" min="1" max="${
-            producto.stock
-          }" readonly class="cantidad-input" />
-          <button class="cantidad-btn" onclick="cambiarCantidad(this, 1)" ${
-            producto.stock <= 1 ? "disabled" : ""
-          }>
-            <i class="fas fa-plus"></i>
-          </button>
-        </section>
+        ${stockSection}
+
+        ${cantidadSection}
 
         <!-- ACCIONES -->
         <section class="product-acciones">
@@ -174,9 +208,9 @@ function renderizarProductos(productos) {
               ? 'disabled style="opacity:0.5; cursor:not-allowed;"'
               : ""
           } 
-             onclick="agregarAlCarrito('${
-               producto._id
-             }', ${precioFinal}, this)">
+            onclick="agregarAlCarrito('${
+              producto._id
+            }', ${precioFinal}, this)">
             <i class="fas fa-shopping-cart"></i> 
             ${producto.stock > 0 ? "Agregar al Carrito" : "Agotado"}
           </a>
@@ -185,7 +219,7 @@ function renderizarProductos(productos) {
               ? 'disabled style="opacity:0.5; cursor:not-allowed;"'
               : ""
           }
-             onclick="comprarAhora('${producto._id}', ${precioFinal})">
+            onclick="comprarAhora('${producto._id}', ${precioFinal})">
             <i class="fas fa-bolt"></i> Comprar ahora
           </a>
         </section>
@@ -199,20 +233,42 @@ function renderizarProductos(productos) {
 // ========== FUNCIONES DEL CARRITO ==========
 function agregarAlCarrito(productoId, precio, elementoBtn, redirigir = false) {
   const contenedor = elementoBtn.closest(".product-tarjeta");
-  const inputCantidad = contenedor.querySelector(".cantidad-input");
-  const cantidad = parseInt(inputCantidad.value);
+
+  // Determinar si es producto único por el atributo o por la presencia del mensaje
+  const esProductoUnico = contenedor.querySelector('.producto-unico-mensaje') !== null ||
+                          contenedor.getAttribute('data-tipo-inventario') === 'unico';
+  
+  let cantidad = 1;
+
+  if (!esProductoUnico) {
+    // Para productos de serie, obtener la cantidad seleccionada
+    const inputCantidad = contenedor.querySelector(".cantidad-input");
+    cantidad = inputCantidad ? parseInt(inputCantidad.value) : 1;
+  } else {
+    // Para productos únicos, la cantidad siempre es 1
+    cantidad = 1;
+  }
 
   // Obtener datos del producto
   const producto = productosCatalogo.find((p) => p._id === productoId);
 
   if (!producto) {
-    alert("Producto no encontrado");
+    mostrarNotificacionCarrito('error', 'Producto no encontrado');
     return;
   }
 
-  if (producto.stock < cantidad) {
-    alert(`Solo hay ${producto.stock} unidades disponibles`);
+    // USAR LA FUNCIÓN DE VALIDACIÓN
+  const validacion = validarProductoAntesDeAgregar(producto, cantidad);
+  
+  if (!validacion.valido) {
+    mostrarNotificacionCarrito('warning', `${validacion.mensaje}`);
     return;
+  }
+
+  // Si la cantidad solicitada es mayor que la máxima permitida, ajustar
+  if (cantidad > validacion.cantidadMaxima) {
+    cantidad = validacion.cantidadMaxima;
+    mostrarNotificacionCarrito('warning', `Cantidad ajustada a ${cantidad} unidades disponibles`);
   }
 
   // Obtener carrito actual de localStorage
@@ -222,13 +278,14 @@ function agregarAlCarrito(productoId, precio, elementoBtn, redirigir = false) {
   const itemExistente = carrito.find((item) => item.id === productoId);
 
   if (itemExistente) {
-    // Actualizar cantidad si ya existe
+    if (esProductoUnico) {
+      mostrarNotificacionCarrito('warning', 'Esta pieza única ya está en tu carrito');
+      return;
+    }
+
+    // Actualizar cantidad si ya existe (Solo productos de serie)
     if (itemExistente.cantidad + cantidad > producto.stock) {
-      alert(
-        `No hay suficiente stock. Máximo disponible: ${
-          producto.stock - itemExistente.cantidad
-        }`
-      );
+      mostrarNotificacionCarrito('warning', `Stock insuficiente. Máximo: ${producto.stock} - En carrito: ${itemExistente.cantidad}`);
       return;
     }
     itemExistente.cantidad += cantidad;
@@ -245,6 +302,8 @@ function agregarAlCarrito(productoId, precio, elementoBtn, redirigir = false) {
       stock: producto.stock,
       categoria: producto.categoria || "General",
       descripcion: producto.descripcion || "Producto de calidad",
+      tipo_inventario: esProductoUnico ? "unico" : "serie", // Guardamos el tipo
+      esPiezaUnica: esProductoUnico // Flag adicional para fácil identificación
     });
   }
 
@@ -252,11 +311,19 @@ function agregarAlCarrito(productoId, precio, elementoBtn, redirigir = false) {
   localStorage.setItem("carrito", JSON.stringify(carrito));
 
   // Feedback visual mejorado
-  const iconoOriginal =
-    elementoBtn.querySelector("i")?.className || "fas fa-shopping-cart";
+  //const iconoOriginal = elementoBtn.querySelector("i")?.className || "fas fa-shopping-cart";
+  
   const textoOriginal = elementoBtn.innerHTML;
 
-  elementoBtn.innerHTML = '<i class="fas fa-check"></i> ¡Agregado!';
+
+  if (esProductoUnico) {
+    elementoBtn.innerHTML = '<i class="fas fa-gem"></i> ¡Pieza Única Agregada!';
+    mostrarNotificacionCarrito('success', '✨ ¡Pieza única agregada al carrito! ✨');
+  } else {
+    elementoBtn.innerHTML = '<i class="fas fa-check"></i> ¡Agregado!';
+    mostrarNotificacionCarrito('success', `✓ ${producto.nombre} agregado al carrito`);
+  }
+
   elementoBtn.style.backgroundColor = "#2ecc71";
   elementoBtn.style.color = "white";
 
@@ -284,9 +351,16 @@ function comprarAhora(productoId, precio) {
 
   const producto = productosCatalogo.find((p) => p._id === productoId);
   if (!producto) {
-    alert("Producto no encontrado");
+    mostrarNotificacionCarrito('error', '❌ Producto no encontrado');
     return;
   }
+
+  // Guardar el carrito actual como respaldo
+  //const carritoActual = JSON.parse(localStorage.getItem("carrito")) || [];
+  //carritoBackup = JSON.parse(JSON.stringify(carritoActual)); // Clon profundo
+  
+  // Determinar si es producto único
+  const esProductoUnico = producto.tipo_inventario === "unico";
 
   // Obtener contenedor del producto
   const tarjeta =
@@ -294,42 +368,67 @@ function comprarAhora(productoId, precio) {
     document.querySelector(`.product-tarjeta`);
 
   let cantidad = 1;
-  if (tarjeta) {
+  if (!esProductoUnico && tarjeta) {
     const inputCantidad = tarjeta.querySelector(".cantidad-input");
     cantidad = inputCantidad ? parseInt(inputCantidad.value) : 1;
   }
 
   // Validar stock
   if (producto.stock < cantidad) {
-    alert(`Solo hay ${producto.stock} unidades disponibles`);
+    mostrarNotificacionCarrito('warning', `⚠️ Stock limitado: ${producto.stock} unidades`);
     return;
   }
 
-  // Crear carrito temporal con solo este producto
-  const carritoDirecto = [
-    {
+  // Para productos únicos, verificar que no se compre más de 1
+  if (esProductoUnico && cantidad > 1) {
+    cantidad = 1;
+  }
+
+
+  // Verificar si el producto ya está en el carrito
+  const itemExistente = carritoActual.find(item => item.id === productoId);
+  
+  let nuevoCarrito = [];
+
+ if (itemExistente && !esProductoUnico) {
+    // Si el producto ya existe, actualizar cantidad
+    nuevoCarrito = carritoActual.map(item => {
+      if (item.id === productoId) {
+        const nuevaCantidad = item.cantidad + cantidad;
+        if (nuevaCantidad > producto.stock) {
+          mostrarNotificacionCarrito('warning', `⚠️ Stock insuficiente. Máximo: ${producto.stock}`);
+          return null;
+        }
+        return { ...item, cantidad: nuevaCantidad };
+      }
+      return item;
+    }).filter(item => item !== null);
+  } else {
+    // Agregar el nuevo producto a la lista existente
+    nuevoCarrito = [...carritoActual, {
       id: productoId,
       nombre: producto.nombre,
       precio: precio,
       cantidad: cantidad,
-      imagen:
-        producto.imagenes?.[0]?.url ||
-        "https://via.placeholder.com/100x100?text=Sin+Imagen",
+      imagen: producto.imagenes?.[0]?.url || "https://via.placeholder.com/100x100?text=Sin+Imagen",
       stock: producto.stock,
       categoria: producto.categoria || "General",
       descripcion: producto.descripcion || "Producto de calidad",
-    },
-  ];
+      tipo_inventario: esProductoUnico ? "unico" : "serie",
+      esPiezaUnica: esProductoUnico
+    }];
+  }
 
   // Guardar en localStorage
-  localStorage.setItem("carrito", JSON.stringify(carritoDirecto));
+  localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
 
-  console.log(
-    `🛒 Producto agregado para compra directa: ${producto.nombre} x${cantidad}`
-  );
-
-  // Redirigir al carrito inmediatamente
-  window.location.href = "./Pages/Carrito.html";
+  // Mostrar notificación de que se está procediendo con la compra
+  mostrarNotificacionCarrito('success', `🛍️ Comprando: ${producto.nombre}`);
+  
+  // Redirigir al carrito
+  setTimeout(() => {
+    window.location.href = "./Pages/Carrito.html";
+  }, 500);
 }
 
 function actualizarContadorCarrito() {
@@ -342,6 +441,224 @@ function actualizarContadorCarrito() {
     badge.style.display = totalProductos > 0 ? "flex" : "none";
   }
 }
+
+// Función para validar que todos los productos del carrito respeten el stock disponible
+function validarCarritoCompleto() {
+  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  let modificado = false;
+  
+  // Agrupar por ID para detectar duplicados
+  const productosPorId = {};
+  carrito.forEach(item => {
+    if (!productosPorId[item.id]) {
+      productosPorId[item.id] = [];
+    }
+    productosPorId[item.id].push(item);
+  });
+  
+  // Verificar cada producto agrupado
+  for (const [id, items] of Object.entries(productosPorId)) {
+    const primerItem = items[0];
+    const esPiezaUnica = primerItem?.tipo_inventario === "unico" || primerItem?.esPiezaUnica === true;
+    
+    // Buscar el producto actualizado en el catálogo global
+    const productoActualizado = productosCatalogo.find(p => p._id === id);
+    
+    // 1. VERIFICAR DUPLICADOS DEL MISMO PRODUCTO
+    if (items.length > 1) {
+      console.warn(`⚠️ Producto duplicado detectado: ${id} (${items.length} entradas)`);
+      
+      // Sumar todas las cantidades
+      const cantidadTotal = items.reduce((sum, item) => sum + item.cantidad, 0);
+      const itemBase = { ...primerItem };
+      
+      // Aplicar límite según tipo de producto
+      if (esPiezaUnica) {
+        itemBase.cantidad = Math.min(cantidadTotal, 1); // Máximo 1 para piezas únicas
+      } else {
+        // Para productos de serie, verificar contra stock actual
+        if (productoActualizado && cantidadTotal > productoActualizado.stock) {
+          itemBase.cantidad = productoActualizado.stock;
+          console.warn(`⚠️ Stock excedido para ${primerItem.nombre}. Ajustado a ${productoActualizado.stock}`);
+        } else {
+          itemBase.cantidad = cantidadTotal;
+        }
+      }
+      
+      // Filtrar y reemplazar
+      carrito = carrito.filter(item => item.id !== id);
+      carrito.push(itemBase);
+      modificado = true;
+    }
+    
+    // 2. VERIFICAR CANTIDADES EXCESIVAS (solo para productos que no están duplicados)
+    const itemExistente = carrito.find(item => item.id === id);
+    if (itemExistente && productosPorId[id].length === 1) {
+      
+      // Validar contra stock actual del backend
+      if (productoActualizado) {
+        const stockDisponible = productoActualizado.stock;
+        const cantidadActual = itemExistente.cantidad;
+        
+        // Para piezas únicas
+        if (esPiezaUnica) {
+          if (cantidadActual > 1) {
+            console.warn(`⚠️ Cantidad incorrecta para pieza única "${itemExistente.nombre}": ${cantidadActual} → 1`);
+            itemExistente.cantidad = 1;
+            modificado = true;
+          }
+          if (stockDisponible < 1) {
+            console.warn(`⚠️ Pieza única "${itemExistente.nombre}" ya no está disponible. Eliminando del carrito.`);
+            carrito = carrito.filter(item => item.id !== id);
+            modificado = true;
+          }
+        } 
+        // Para productos de serie
+        else {
+          if (cantidadActual > stockDisponible && stockDisponible > 0) {
+            console.warn(`⚠️ Stock insuficiente para "${itemExistente.nombre}". Cantidad: ${cantidadActual} → Stock: ${stockDisponible}`);
+            itemExistente.cantidad = stockDisponible;
+            modificado = true;
+          } else if (stockDisponible <= 0) {
+            console.warn(`⚠️ Producto "${itemExistente.nombre}" agotado. Eliminando del carrito.`);
+            carrito = carrito.filter(item => item.id !== id);
+            modificado = true;
+          }
+        }
+        
+        // Actualizar stock en el objeto del carrito
+        if (productoActualizado && itemExistente) {
+          itemExistente.stock = stockDisponible;
+          itemExistente.precio = productoActualizado.precio_final || productoActualizado.precio_original;
+        }
+      }
+    }
+  }
+  
+  // 3. VERIFICACIÓN ADICIONAL: Eliminar productos con stock 0 que no fueron capturados arriba
+  const carritoFiltrado = carrito.filter(item => {
+    const productoActualizado = productosCatalogo.find(p => p._id === item.id);
+    if (productoActualizado && productoActualizado.stock <= 0) {
+      console.warn(`⚠️ Producto "${item.nombre}" agotado. Eliminado del carrito.`);
+      modificado = true;
+      return false;
+    }
+    return true;
+  });
+  
+  if (modificado || carritoFiltrado.length !== carrito.length) {
+    localStorage.setItem("carrito", JSON.stringify(carritoFiltrado));
+    console.log("✅ Carrito corregido y normalizado");
+    
+    // Actualizar contador del carrito
+    actualizarContadorCarrito();
+    
+    // Mostrar notificación si hay cambios
+    mostrarNotificacionCarrito('info', 'Carrito actualizado según disponibilidad');
+  }
+  
+  return carritoFiltrado;
+}
+// ========== SISTEMA DE NOTIFICACIONES MEJORADO ==========
+// Elimina la función anterior 'mostrarNotificacionCarrito' y reemplázala con:
+
+function mostrarNotificacionCarrito(tipo = 'info', mensaje = null) {
+  // Eliminar notificaciones existentes para evitar acumulación
+  const notificacionesExistentes = document.querySelectorAll('.carrito-notificacion');
+  notificacionesExistentes.forEach(notif => notif.remove());
+  
+  // Mapeo de tipos a configuraciones
+  const config = {
+    success: {
+      icono: '<i class="fas fa-check-circle"></i>',
+      titulo: '¡Éxito!',
+      defaultMsg: 'Producto agregado correctamente'
+    },
+    error: {
+      icono: '<i class="fas fa-exclamation-triangle"></i>',
+      titulo: 'Error',
+      defaultMsg: 'Error al procesar la solicitud'
+    },
+    warning: {
+      icono: '<i class="fas fa-exclamation-triangle"></i>',
+      titulo: 'Atención',
+      defaultMsg: 'Verifica la información'
+    },
+    info: {
+      icono: '<i class="fas fa-info-circle"></i>',
+      titulo: 'Información',
+      defaultMsg: 'Carrito actualizado'
+    }
+  };
+  
+  const cfg = config[tipo] || config.info;
+  const texto = mensaje || cfg.defaultMsg;
+  
+  // Crear notificación
+  const notificacion = document.createElement('div');
+  notificacion.className = `carrito-notificacion ${tipo}`;
+  notificacion.innerHTML = `${cfg.icono}<span>${texto}</span>`;
+  
+  document.body.appendChild(notificacion);
+  
+  // Auto-eliminar después de 3 segundos
+  setTimeout(() => {
+    if (notificacion && notificacion.parentNode) {
+      notificacion.style.animation = 'slideOutRight 0.3s ease';
+      setTimeout(() => {
+        if (notificacion && notificacion.parentNode) {
+          notificacion.remove();
+        }
+      }, 300);
+    }
+  }, 3000);
+}
+
+
+// Función helper para validar un producto específico antes de agregar al carrito
+function validarProductoAntesDeAgregar(producto, cantidadSolicitada) {
+  if (!producto) {
+    return { valido: false, mensaje: "Producto no encontrado" };
+  }
+  
+  const esPiezaUnica = producto.tipo_inventario === "unico";
+  const stockDisponible = producto.stock;
+  
+  // Validación para piezas únicas
+  if (esPiezaUnica) {
+    if (stockDisponible < 1) {
+      return { valido: false, mensaje: "Lo sentimos, esta pieza única ya no está disponible" };
+    }
+    if (cantidadSolicitada > 1) {
+      return { valido: false, mensaje: "Esta es una pieza única. Solo puedes adquirir 1 unidad" };
+    }
+    
+    // Verificar si ya existe en el carrito
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const yaExiste = carrito.some(item => item.id === producto._id);
+    if (yaExiste) {
+      return { valido: false, mensaje: "Esta pieza única ya está en tu carrito" };
+    }
+    
+    return { valido: true, cantidadMaxima: 1 };
+  }
+  
+  // Validación para productos de serie
+  if (stockDisponible <= 0) {
+    return { valido: false, mensaje: "Producto agotado" };
+  }
+  
+  if (cantidadSolicitada > stockDisponible) {
+    return { 
+      valido: false, 
+      mensaje: `Solo hay ${stockDisponible} unidades disponibles`,
+      cantidadMaxima: stockDisponible
+    };
+  }
+  
+  return { valido: true, cantidadMaxima: stockDisponible };
+}
+
 
 // ========== GALERÍA DE IMÁGENES ==========
 function abrirGaleria(listaImagenes) {
@@ -502,6 +819,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Configurar menús desplegables
   configurarMenusDesplegables();
+
+  // Esperar a que los productos estén cargados para validar el carrito
+  setTimeout(() => {
+    if (productosCatalogo && productosCatalogo.length > 0) {
+      console.log("🔄 Ejecutando validación del carrito...");
+      const carritoValidado = validarCarritoCompleto();
+      console.log(`✅ Carrito validado: ${carritoValidado.length} productos`);
+      
+      // Actualizar contador nuevamente después de la validación
+      actualizarContadorCarrito();
+    }
+  }, 1000); // Dar tiempo a que carguen los productos
+
 });
 
 function configurarMenusDesplegables() {

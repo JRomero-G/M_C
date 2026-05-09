@@ -317,9 +317,9 @@ function validarDatosRegistro(formData) {
     return false;
   }
 
-  if (formData.files.length === 0) {
-    alert("❌ Selecciona al menos una imagen");
-    return false;
+  if (!window.imagenesRegistro || window.imagenesRegistro.length === 0) {
+      alert("❌ Selecciona al menos una imagen");
+      return false;
   }
 
   return true;
@@ -349,7 +349,7 @@ async function registrarProducto(e) {
       '<i class="fas fa-spinner fa-spin"></i> Procesando...';
     btnSubmit.disabled = true;
 
-    const imagenesSubidas = await subirImagenesACloudinary(formData.files);
+    const imagenesSubidas = await subirImagenesACloudinary(window.imagenesRegistro);
 
     const productoData = {
       nombre: formData.nombre,
@@ -427,7 +427,7 @@ function limpiarFormularioRegistro() {
   }
 
   window.imagenesRegistro = [];
-  actualizarContadorImagenes();
+  window.actualizarContadorImagenesRegistro();
 }
 
 /**
@@ -728,7 +728,7 @@ async function actualizarProducto(e) {
     const imagenesActualesCount = productoActual?.imagenes?.length || 0;
     const imagenesAEliminarCount =
       window.imagenesMarcadasParaEliminar?.length || 0;
-    const nuevasImagenesCount = formData.files.length;
+    const nuevasImagenesCount = window.imagenesActualizacion?.length || 0;
 
     const totalFinal =
       imagenesActualesCount - imagenesAEliminarCount + nuevasImagenesCount;
@@ -786,9 +786,10 @@ async function actualizarProducto(e) {
       }, 1000);
     }
     // Limpiar estado
-    window.imagenesMarcadasParaEliminar = [];
+    window.limpiarVariablesImagenes();
 
     mostrarMensajeActualizacionExito(resultado, formData.nombre);
+        
 
     // Recargar datos
     await cargarProductos();
@@ -796,72 +797,30 @@ async function actualizarProducto(e) {
 
     // Limpiar y cambiar sección
     limpiarFormularioActualizar();
+    
+    // ← Restaurar botón ANTES de cambiar de sección
+    btnSubmit.innerHTML = textoOriginal;
+    btnSubmit.disabled = false;
+    
     cambiarASeccion("productos", "productos");
+  
   } catch (error) {
     console.error("Error en actualización:", error);
     alert(`❌ Error: ${error.message}`);
   } finally {
-    btnSubmit.innerHTML = textoOriginal;
-    btnSubmit.disabled = false;
+    if (btnSubmit && btnSubmit.disabled) {
+      btnSubmit.innerHTML = textoOriginal;
+      btnSubmit.disabled = false;
+    }
   }
 }
 
 /**
  * Muestra previsualización de nuevas imágenes seleccionadas CON BOTÓN DE ELIMINAR
  */
-function mostrarPreviewNuevasImagenes() {
-  const container = document.getElementById("preview-nuevas-imagenes");
-  container.innerHTML = "";
 
-  window.imagenesActualizacion.forEach((file, index) => {
-    const url = URL.createObjectURL(file);
+// REEMPLAZA la función eliminarImagenNueva completa (línea ~900-920)
 
-    const div = document.createElement("div");
-    div.className = "imagen-preview";
-    div.style.position = "relative";
-    div.style.display = "inline-block";
-    div.style.margin = "10px";
-
-    div.innerHTML = `
-      <img src="${url}" style="width:100px;height:100px;object-fit:cover;">
-      <button onclick="eliminarImagenNueva(${index})"
-              style="position:absolute;top:5px;right:5px;
-                     background:#dc3545;color:white;border:none;
-                     border-radius:50%;width:25px;height:25px;cursor:pointer;">
-        <i class="fas fa-times"></i>
-      </button>
-    `;
-
-    container.appendChild(div);
-  });
-}
-
-/* Eliminar una imagen nueva antes de actualizar */
-function eliminarImagenNueva(index) {
-  if (
-    !window.imagenesActualizacion ||
-    !Array.isArray(window.imagenesActualizacion)
-  ) {
-    alert("❌ No hay imágenes nuevas");
-    return;
-  }
-
-  if (index < 0 || index >= window.imagenesActualizacion.length) {
-    console.error("Índice inválido");
-    return;
-  }
-
-  const img = window.imagenesActualizacion[index];
-  const nombre = img?.name || img?.nombre_original || `Imagen ${index + 1}`;
-
-  if (!confirm(`¿Quitar imagen nueva seleccionada?\n\n${nombre}`)) {
-    return;
-  }
-
-  window.imagenesActualizacion.splice(index, 1);
-  mostrarPreviewNuevasImagenes();
-  mostrarNotificacion("Imagen nueva eliminada", "info");
-}
 
 /**
  * Muestra una notificación temporal
@@ -914,6 +873,10 @@ function mostrarNotificacion(mensaje, tipo = "info") {
 
 /* Prepara datos para actualización */
 async function prepararDatosActualizacion(formData) {
+  // Tomar snapshot y limpiar inmediatamente para evitar duplicados
+  const imagenesNuevas = [...(window.imagenesActualizacion || [])];
+  window.imagenesActualizacion = [];
+
   const updateData = {
     nombre: formData.nombre,
     descripcion: formData.descripcion,
@@ -923,13 +886,6 @@ async function prepararDatosActualizacion(formData) {
     categoria: formData.categoria,
     tipo_inventario: formData.tipoInventario,
   };
-
-   // Debug temporal — eliminar después de confirmar
-  console.log("📤 Datos que se enviarán al backend:", {
-    tipo_inventario: updateData.tipo_inventario,
-    stock: updateData.stock,
-    nombre: updateData.nombre
-  });
 
   // OBTENER IMÁGENES ORIGINALES DIRECTAMENTE DE LA BD
   const idProducto = document.getElementById("update-id")?.value;
@@ -969,16 +925,17 @@ async function prepararDatosActualizacion(formData) {
     if (!marcadaParaEliminar) {
       imagenesParaEnviar.push({
         url: img.url,
-        public_id: img.public_id || `original-${Date.now()}-${index}`,
+        public_id: img.public_id,
         es_principal: img.es_principal || false,
         nombre_original: img.nombre_original || `imagen-${index + 1}`,
       });
     }
   });
 
-  // 2. Subir y agregar nuevas imágenes si las hay
-  if (formData.files.length > 0) {
-    const nuevasImagenes = await subirImagenesACloudinary(formData.files);
+  // 2. Subir y agregar NUEVAS imágenes usando window.imagenesActualizacion
+  //    NO usar formData.files para evitar duplicados
+  if (imagenesNuevas && imagenesNuevas.length > 0) {
+    const nuevasImagenes = await subirImagenesACloudinary(imagenesNuevas);
 
     nuevasImagenes.forEach((img, index) => {
       imagenesParaEnviar.push({
@@ -1060,7 +1017,6 @@ function ocultarFormularioActualizar() {
 function limpiarFormularioActualizar() {
   if (!AuthService.isAdmin()) return;
 
-  if (confirm("¿Limpiar formulario? Se perderán los cambios no guardados")) {
     const formActualizar = document.getElementById("form-actualizar");
     if (formActualizar) {
       formActualizar.reset();
@@ -1077,17 +1033,21 @@ function limpiarFormularioActualizar() {
     if (previewNuevasImagenes) previewNuevasImagenes.innerHTML = "";
 
     // RESET COMPLETO de variables de imágenes
-    window.imagenesActualizacion = [];
-    window.imagenesActualesProducto = [];
-    window.imagenesMarcadasParaEliminar = [];
+    // Limpiar variables usando la función del módulo de imágenes
+    if (typeof limpiarVariablesImagenes === 'function') {
+      limpiarVariablesImagenes();
+    } else {
+      window.imagenesActualizacion = [];
+      window.imagenesActualesProducto = [];
+      window.imagenesMarcadasParaEliminar = [];
+    }
   }
-}
 
 /**
  * Subir imágenes al registrar el producto
  */
 async function subirImagenesACloudinary(files) {
-  imagenesRegistro = [];
+  const resultado = [];
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -1104,7 +1064,7 @@ async function subirImagenesACloudinary(files) {
       if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
 
       const cloudinaryData = await response.json();
-      imagenesRegistro.push({
+      resultado.push({
         url: cloudinaryData.secure_url,
         public_id: cloudinaryData.public_id,
         es_principal: i === 0,
@@ -1116,7 +1076,7 @@ async function subirImagenesACloudinary(files) {
     }
   }
 
-  return imagenesRegistro;
+  return resultado;
 }
 
 /**
@@ -1168,7 +1128,7 @@ async function eliminarImagenesIndividualmente(publicIds) {
   for (const publicId of publicIds) {
     try {
       const response = await fetchAdmin(
-        `${window.BACKEND_URL}/productos/imagenes/eliminar`,
+        `${window.BACKEND_URL}/productos/imagenes/eliminar-individual`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
@@ -1361,7 +1321,7 @@ async function confirmarDesactivarProducto(id) {
     if (!response.ok) throw new Error(result.error || "Error al desactivar");
 
     alert("✅ Producto desactivado correctamente");
-    await cargarProductos();
+    cargarProductos();
     actualizarDashboard();
   } catch (error) {
     alert(`❌ Error: ${error.message}`);
@@ -1466,11 +1426,19 @@ function eliminarImagenActual(index) {
 
   const publicId = imagen.public_id;
 
-  if (
-    !confirm("¿Está seguro de eliminar esta imagen? Esta acción es permanente.")
-  ) {
-    return;
-  }
+// Mostrar modal de confirmación ANTES de marcar
+  mostrarModalConfirmacion({
+    titulo: 'Eliminar Imagen',
+    mensaje: '¿Está seguro de eliminar esta imagen? Esta acción es permanente.',
+    tipo: 'danger',
+    icono: 'fa-trash',
+    textoConfirmar: 'Eliminar',
+    textoCancelar: 'Cancelar'
+  }).then((confirmado) => {
+    if (!confirmado) {
+      // Si cancela, NO hacer nada
+      return;
+    }
 
   if (!window.imagenesMarcadasParaEliminar) {
     window.imagenesMarcadasParaEliminar = [];
@@ -1481,6 +1449,7 @@ function eliminarImagenActual(index) {
   }
 
   actualizarVistaImagenesActuales();
+  });
 }
 
 function revertirEliminacionImagen(publicId) {
@@ -1752,6 +1721,7 @@ function actualizarContadorProductosDashboard() {
 document.addEventListener("DOMContentLoaded", () => {
   configurarFiltrosProductos();
   configurarListenersTipoInventario();  
+  
 });
 
 // Exportar funciones para uso global
@@ -1774,8 +1744,8 @@ window.prepararDatosActualizacion = prepararDatosActualizacion;
 window.eliminarImagenActual = eliminarImagenActual;
 window.revertirEliminacionImagen = revertirEliminacionImagen;
 window.mostrarNotificacion = mostrarNotificacion;
-window.mostrarPreviewNuevasImagenes = mostrarPreviewNuevasImagenes;
-window.eliminarImagenNueva = eliminarImagenNueva;
+//window.mostrarPreviewNuevasImagenes = mostrarPreviewNuevasImagenes;//
+//window.eliminarImagenNueva = eliminarImagenNueva;//
 window.actualizarControlesPaginacionProductos = actualizarControlesPaginacionProductos;
 window.irPaginaAnteriorProductos = irPaginaAnteriorProductos;
 window.irPaginaSiguienteProductos = irPaginaSiguienteProductos;

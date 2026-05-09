@@ -9,6 +9,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="../../Css/Dasboard.css" />
+    <link rel="stylesheet" href="../../Css/Notificaciones/Notificacion-Principal.css">
   </head>
   <body>
     <section class="dashboard-container">
@@ -336,12 +337,13 @@
               </div>
               <div class="form-group">
                 <label>Imágenes</label>
-                <input
-                  type="file"
-                  id="product-images"
-                  multiple
-                  accept="image/*"
-                />
+                <button type="button" onclick="document.getElementById('product-images').click()"
+                        class="btn-primary" style="margin-bottom:8px;">
+                  <i class="fas fa-upload"></i> Seleccionar imágenes
+                </button>
+                <input type="file" id="product-images" multiple accept="image/*"
+                      style="display:none;">
+                  <small id="contador-imagenes-registro" style="display: block; margin-top: 5px; color: #666;">0 imágenes seleccionadas</small>
                 <div id="preview-imagenes" class="preview-container"></div>
               </div>
               <div class="form-actions">
@@ -377,7 +379,7 @@
                 <span id="nombre-producto-encontrado"></span>
               </p>
             </div>
-            <form id="form-actualizar" style="display: none">
+            <form id="form-actualizar" style="display: none" onsubmit="event.preventDefault(); actualizarProducto(event);">
               <input type="hidden" id="update-id" />
               <div class="form-row">
                 <div class="form-group">
@@ -441,12 +443,13 @@
               </div>
               <div class="form-group">
                 <label>Agregar Nuevas Imágenes</label>
-                <input
-                  type="file"
-                  id="update-images"
-                  multiple
-                  accept="image/*"
-                />
+                <button type="button" onclick="document.getElementById('update-images').click()"
+                        class="btn-primary" style="margin-bottom:8px;">
+                  <i class="fas fa-upload"></i> Seleccionar Nuevas imágenes
+                </button>
+                <input type="file" id="update-images" multiple accept="image/*"
+                      style="display:none;">
+                  <small id="contador-imagenes-nuevas" style="display: block; margin-top: 5px; color: #666;">0 imágenes Nuevas seleccionadas</small>
                 <div
                   id="preview-nuevas-imagenes"
                   class="preview-container"

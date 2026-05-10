@@ -229,13 +229,18 @@ const crearPedidoPublico = async (req, res) => {
         await enviarConfirmacionPedido(
             cliente.correo.toLowerCase(),
             pedidoGuardado,
-            itemsProcesados
+            itemsProcesados.map(item => ({  // ← mapear a objeto plano
+                nombre_producto: item.producto.nombre,
+                cantidad: item.cantidad,
+                precio_unitario: item.precio_unitario,
+                subtotal: item.subtotal
+            }))
         );
-        console.log(`📧 Correo de confirmación enviado a ${cliente.correo}`);
+        console.log(`📧 Correo enviado a ${cliente.correo}`);
     } catch (emailError) {
-        // El error de correo NO cancela el pedido
-        console.error("⚠️ Error al enviar correo de confirmación:", emailError.message);
+          console.error("⚠️ Error al enviar correo:", emailError.message);
     }
+
     // ================================
     // PREPARAR RESPUESTA
     // ================================

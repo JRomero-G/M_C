@@ -17,11 +17,18 @@ let costo_envio = 0;
 
 // Modifica tu evento DOMContentLoaded:
 document.addEventListener("DOMContentLoaded", function () {
+
+    // Detectar si es compra directa ANTES de cargar el carrito
+  const esCompraDirecta = detectarCompraDirecta();
+
+  // Si es compra directa, el carrito ya tiene el producto (lo guardó comprarAhora)
+  carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  
   /*PRUEBAS */
   console.log("📦 Datos cargados:", {
     productos: carrito.length,
-    //envioCosto: envioCosto,
-    //tipoEnvio: tipoEnvio,
+    esCompraDirecta: esCompraDirecta,
+    compraDirectaData: window.datosCompraDirecta
   });
 
   // Verificar si hay un modal pendiente
@@ -37,13 +44,56 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   
   // Mostrar notificación de bienvenida
-  mostrarNotificacionFacturacion('info', ` ${carrito.length} producto(s) listos para facturar`);
+  if (esCompraDirecta) {
+    mostrarNotificacionFacturacion('info', `⚡ Compra directa de: ${carrito[0]?.nombre || 'producto'}`);
+  } else {
+    mostrarNotificacionFacturacion('info', `${carrito.length} producto(s) listos para facturar`);
+  }
   
-
   calcularResumen();
   configurarEventos();
   configurarSelectEnvio();
+
+  // Agregar indicador visual de compra directa
+  if (esCompraDirecta) {
+    agregarIndicadorCompraDirecta();
+  }
+
 });
+
+// Función para agregar indicador visual de compra directa
+function agregarIndicadorCompraDirecta() {
+  const formulario = document.querySelector('.formulario');
+  if (formulario) {
+    const indicador = document.createElement('div');
+    indicador.className = 'compra-directa-indicador';
+    indicador.innerHTML = `
+      <i class="fas fa-bolt"></i>
+      <div>
+        <strong>Compra Directa</strong>
+        <p>Estás comprando: ${carrito[0]?.nombre || 'Producto'} (${carrito[0]?.cantidad || 1} unidad${carrito[0]?.cantidad !== 1 ? 'es' : ''})</p>
+        <small>Solo se procesará este producto. Tu carrito anterior no ha sido modificado.</small>
+      </div>
+      <button type="button" id="btnCancelarDirecta" class="btn-cancelar-directa">
+        <i class="fas fa-times"></i> Cancelar
+      </button>
+    `;
+    
+    // Insertar al inicio del formulario
+    formulario.insertBefore(indicador, formulario.firstChild);
+    
+    // Evento para cancelar compra directa
+    document.getElementById('btnCancelarDirecta')?.addEventListener('click', () => {
+      limpiarCompraDirecta();
+      localStorage.removeItem("carrito");
+      mostrarNotificacionFacturacion('info', 'Compra directa cancelada');
+      setTimeout(() => {
+        window.location.href = "../Index.html";
+      }, 500);
+    });
+  }
+}
+
 
 // ============================================
 //     ACTUALIZAR INFORMACIÓN DE ENVÍO EN PANTALLA
@@ -265,9 +315,7 @@ async function confirmarPedido() {
       id_producto: item.id,
       cantidad: item.cantidad,
     })),
-    notas: `Ciudad: ${
-      ciudad || "Recoger en tienda"
-    } | Tipo envío: ${tipoEnvio}`,
+    notas: `Ciudad: ${ciudad || "Recoger en tienda"} | Tipo envío: ${tipoEnvioBackend}`,
   };
 
   console.log("📤 Enviando pedido al backend:", datosPedido);
@@ -622,13 +670,15 @@ function verificarModalPendiente() {
 //     LIMPIAR CARRITO
 // ============================================
 function limpiarDatos() {
+  // Limpiar compra directa si existe
+  limpiarCompraDirecta();
+  
   localStorage.removeItem("carrito");
   localStorage.removeItem("carrito_total");
   localStorage.removeItem("costo_envio");
   localStorage.removeItem("tipo_envio");
   carrito = [];
   costo_envio = 0;
-  tipoEnvio = "";
 
   // Actualizar badge en otras pestañas si existe la función
   if (typeof actualizarContadorCarritoGlobal === "function") {
@@ -989,6 +1039,45 @@ function analizarEstructuraPedido(pedido) {
   }
 
   console.log("=== FIN ANÁLISIS ===\n");
+}
+
+// ============================================
+//     DETECTAR COMPRA DIRECTA
+// ============================================
+
+function detectarCompraDirecta() {
+  const compraDirecta = JSON.parse(localStorage.getItem("compra_directa"));
+  
+  if (compraDirecta && compraDirecta.tipo === "compra_directa") {
+    console.log("⚡ Compra directa detectada:", compraDirecta);
+    
+    // Mostrar notificación
+    mostrarNotificacionFacturacion('info', 
+      `⚡ Compra directa: ${compraDirecta.producto.nombre} x${compraDirecta.producto.cantidad}`
+    );
+    
+    // Marcar que es compra directa (para posible uso posterior)
+    window.esCompraDirecta = true;
+    window.datosCompraDirecta = compraDirecta;
+    
+    // No eliminamos la compra_directa aún, la mantendremos por si se necesita
+    // Se eliminará al finalizar la compra o al salir
+    
+    return true;
+  }
+  
+  window.esCompraDirecta = false;
+  return false;
+}
+
+// Función para limpiar compra directa (llamar al finalizar o cancelar)
+function limpiarCompraDirecta() {
+  if (window.esCompraDirecta) {
+    localStorage.removeItem("compra_directa");
+    window.esCompraDirecta = false;
+    window.datosCompraDirecta = null;
+    console.log("🧹 Compra directa limpiada");
+  }
 }
 
 // Hacer disponible globalmente

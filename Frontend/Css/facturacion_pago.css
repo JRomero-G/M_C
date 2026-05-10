@@ -10,7 +10,10 @@
     --gris-oscuro: #6c757d;
     --verde: #2ecc71;
     --rojo: #e74c3c;
+    --rojo-cancelar: rgb(226 2 2 / 80%);
+    --rojo-cancelar-hover: rgba(184, 20, 20, 0.8);
     --amarillo: #f1c40f;
+    --amarillo-alerta: linear-gradient(135deg, #ffd700, #ff8c00);
     --sombra: 0 8px 30px rgba(0, 0, 0, 0.12);
     --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.08);
     --radio: 12px;
@@ -1027,6 +1030,77 @@ margin-top: 20px;
 
 .modal-confirmacion .btn-inicio:active {
     transform: translateY(0);
+}
+
+/* Indicador de compra directa */
+.compra-directa-indicador {
+  background: var(--amarillo-alerta);
+  color: var(--blanco);
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  animation: slideInDown 0.3s ease;
+}
+
+.compra-directa-indicador i {
+  font-size: 28px;
+}
+
+.compra-directa-indicador div {
+  flex: 1;
+}
+
+.compra-directa-indicador strong {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.compra-directa-indicador p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.95;
+}
+
+.compra-directa-indicador small {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  display: block;
+  margin-top: 4px;
+}
+
+.btn-cancelar-directa {
+  background: var(--rojo-cancelar);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--blanco);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-cancelar-directa:hover {
+  background: var(--rojo-cancelar-hover);
+  transform: translateY(-2px);
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* Animaciones del modal */

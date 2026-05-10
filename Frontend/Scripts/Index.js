@@ -354,18 +354,13 @@ function comprarAhora(productoId, precio) {
     mostrarNotificacionCarrito('error', '❌ Producto no encontrado');
     return;
   }
-
-  // Guardar el carrito actual como respaldo
-  //const carritoActual = JSON.parse(localStorage.getItem("carrito")) || [];
-  //carritoBackup = JSON.parse(JSON.stringify(carritoActual)); // Clon profundo
   
   // Determinar si es producto único
   const esProductoUnico = producto.tipo_inventario === "unico";
 
-  // Obtener contenedor del producto
-  const tarjeta =
-    document.querySelector(`.product-tarjeta[data-id="${productoId}"]`) ||
-    document.querySelector(`.product-tarjeta`);
+  // Obtener contenedor del producto para leer la cantidad seleccionada
+  const tarjeta = document.querySelector(`.product-tarjeta[data-id="${productoId}"]`) ||
+                  document.querySelector(`.product-tarjeta`);
 
   let cantidad = 1;
   if (!esProductoUnico && tarjeta) {
@@ -375,37 +370,19 @@ function comprarAhora(productoId, precio) {
 
   // Validar stock
   if (producto.stock < cantidad) {
-    mostrarNotificacionCarrito('warning', `⚠️ Stock limitado: ${producto.stock} unidades`);
+    mostrarNotificacionCarrito('warning', `⚠️ Stock limitado: solo ${producto.stock} unidades disponibles`);
     return;
   }
 
-  // Para productos únicos, verificar que no se compre más de 1
+  // Para productos únicos, limitar a 1
   if (esProductoUnico && cantidad > 1) {
     cantidad = 1;
   }
 
-
-  // Verificar si el producto ya está en el carrito
-  const itemExistente = carritoActual.find(item => item.id === productoId);
-  
-  let nuevoCarrito = [];
-
- if (itemExistente && !esProductoUnico) {
-    // Si el producto ya existe, actualizar cantidad
-    nuevoCarrito = carritoActual.map(item => {
-      if (item.id === productoId) {
-        const nuevaCantidad = item.cantidad + cantidad;
-        if (nuevaCantidad > producto.stock) {
-          mostrarNotificacionCarrito('warning', `⚠️ Stock insuficiente. Máximo: ${producto.stock}`);
-          return null;
-        }
-        return { ...item, cantidad: nuevaCantidad };
-      }
-      return item;
-    }).filter(item => item !== null);
-  } else {
-    // Agregar el nuevo producto a la lista existente
-    nuevoCarrito = [...carritoActual, {
+  // Crear objeto de compra directa (NO modifica el carrito existente)
+  const compraDirecta = {
+    tipo: "compra_directa",
+    producto: {
       id: productoId,
       nombre: producto.nombre,
       precio: precio,
@@ -416,18 +393,34 @@ function comprarAhora(productoId, precio) {
       descripcion: producto.descripcion || "Producto de calidad",
       tipo_inventario: esProductoUnico ? "unico" : "serie",
       esPiezaUnica: esProductoUnico
-    }];
-  }
+    },
+    timestamp: Date.now()
+  };
 
-  // Guardar en localStorage
-  localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
-
-  // Mostrar notificación de que se está procediendo con la compra
-  mostrarNotificacionCarrito('success', `🛍️ Comprando: ${producto.nombre}`);
+  // Guardar compra directa en localStorage (separado del carrito)
+  localStorage.setItem("compra_directa", JSON.stringify(compraDirecta));
   
-  // Redirigir al carrito
+  // También guardar como carrito temporal para facturación
+  const carritoDirecto = [{
+    id: productoId,
+    nombre: producto.nombre,
+    precio: precio,
+    cantidad: cantidad,
+    imagen: producto.imagenes?.[0]?.url || "https://via.placeholder.com/100x100?text=Sin+Imagen",
+    stock: producto.stock,
+    categoria: producto.categoria || "General",
+    descripcion: producto.descripcion || "Producto de calidad",
+    tipo_inventario: esProductoUnico ? "unico" : "serie",
+    esPiezaUnica: esProductoUnico
+  }];
+  
+  localStorage.setItem("carrito", JSON.stringify(carritoDirecto));
+
+  mostrarNotificacionCarrito('success', `🛍️ Redirigiendo a facturación...`);
+  
+  // Redirigir directamente a facturación
   setTimeout(() => {
-    window.location.href = "./Pages/Carrito.html";
+    window.location.href = "./Pages/facturacion_pago.html";
   }, 500);
 }
 

@@ -73,6 +73,26 @@ app.use((error, req, res, next) => {
   });
 });
 
+// TEMPORAL: Para depurar rutas registradas
+app.get("/debug-routes", (req, res) => {
+  const routes = [];
+  app._router.stack.forEach((middleware) => {
+    if (middleware.route) {
+      routes.push(middleware.route.path);
+    } else if (middleware.name === "router") {
+      middleware.handle.stack.forEach((handler) => {
+        if (handler.route) {
+          routes.push({
+            path: handler.route.path,
+            method: Object.keys(handler.route.methods)[0]
+          });
+        }
+      });
+    }
+  });
+  res.json(routes);
+});
+
 // ========== INICIAR SERVIDOR ==========
 const PORT = process.env.PORT;
 const correo = process.env.EMAIL_USER;
@@ -81,5 +101,6 @@ const pass = process.env.EMAIL_PASS;
 app.listen(PORT, () => {
   console.log("=".repeat(50));
   console.log(`🚀 Servidor en https://m-c-h5or.onrender.com:${PORT}`);
+  console.log(`Ruta Reset Pass: https://m-c-h5or.onrender.com/api/auth/forgot-password`);
   console.log("=".repeat(50));
 });

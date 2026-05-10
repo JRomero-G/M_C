@@ -11,11 +11,14 @@ require("./models/Usuarios");
 require("./models/Producto");
 require("./models/Pedidos");
 require("./models/Pedido-detalle");
+require("./models/Reset_pass");
 
 // RUTAS
 const productosRoutes = require("./routes/Productos-routes");
 const usuariosRoutes = require("./routes/Usuarios-routes");
 const pedidosRoutes = require("./routes/Pedidos-routes");
+const authRoutes = require("./routes/Auth-routes");
+
 
 const app = express();
 
@@ -40,6 +43,7 @@ connectDB();
 app.use("/api/productos", productosRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/pedidos", pedidosRoutes);
+app.use("/api/auth", authRoutes);
 
 // ========== RUTAS BÁSICAS ==========
 app.get("/", (req, res) => {
@@ -71,7 +75,9 @@ app.use((error, req, res, next) => {
 
 // ========== INICIAR SERVIDOR ==========
 const PORT = process.env.PORT;
-const Backend_URL = process.env.Backend_URL;
+const correo = process.env.EMAIL_USER;
+const pass = process.env.EMAIL_PASS;
+
 app.listen(PORT, () => {
   console.log("=".repeat(50));
   console.log(`🚀 Servidor en https://m-c-h5or.onrender.com:${PORT}`);

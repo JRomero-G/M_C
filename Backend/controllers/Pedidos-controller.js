@@ -227,7 +227,7 @@ const crearPedidoPublico = async (req, res) => {
     // Enviar correo de confirmación (fuera de la transacción)
     try {
         await enviarConfirmacionPedido(
-            cliente.correo,
+            cliente.correo.toLowerCase(),
             pedidoGuardado,
             itemsProcesados
         );

@@ -1,6 +1,6 @@
 // models/Usuarios.js - VERSIÓN CORREGIDA
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");//encriptar el password
+const bcrypt = require("bcrypt");//encriptar el password
 
 const usuarioSchema = new mongoose.Schema(
   {
@@ -50,9 +50,9 @@ usuarioSchema.methods.compararPassword = async function (password) {
 };
 
 // Middleware para encriptar contraseña 
-usuarioSchema.pre("save", async function () {
+usuarioSchema.pre("save", async function (next) {
   // Solo encriptar si la contraseña fue modificada
-  if (!this.isModified("password")) return;
+  if (!this.isModified("password")) return next();
 
   try {
     const salt = await bcrypt.genSalt(10);

@@ -7,6 +7,7 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     // Configura tu servicio de correo electrónico aquí
     service: 'gmail', // Ejemplo con Gmail
+    family: 4,
     auth:{
         user: process.env.EMAIL_USER, // Tu correo electrónico
         pass: process.env.EMAIL_PASS  // Tu contraseña de correo electrónico o token de aplicación

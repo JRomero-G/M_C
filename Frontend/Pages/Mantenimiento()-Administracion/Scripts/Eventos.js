@@ -94,22 +94,19 @@ function configurarEventosPedidos() {
 /**
  * Configura eventos relacionados con imágenes
  */
+
+// DESPUÉS (función real y limpia)
 function configurarEventosImagenes() {
+  // Los listeners se conectan aquí, no en el HTML con onchange
   document
     .getElementById("product-images")
     ?.addEventListener("change", manejarImagenesRegistro);
-  /*
+
   document
     .getElementById("update-images")
     ?.addEventListener("change", manejarImagenesActualizar);
-*/
-    document.getElementById("update-images").addEventListener("change", e => {
-  const files = Array.from(e.target.files);
-  window.imagenesActualizacion.push(...files);
-  mostrarPreviewNuevasImagenes();
-});
-
 }
+
 
 /**
  * Configura eventos relacionados con usuarios

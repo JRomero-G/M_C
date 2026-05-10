@@ -291,6 +291,112 @@ function formatearFecha(fechaString) {
   }
 }
 
+// ============================================
+//     SISTEMA DE NOTIFICACIONES UNIFICADO PARA ADMIN
+// ============================================
+
+function mostrarNotificacionAdmin(tipo = 'info', mensaje = null) {
+  // Eliminar notificaciones existentes
+  const notificacionesExistentes = document.querySelectorAll('.carrito-notificacion');
+  notificacionesExistentes.forEach(notif => notif.remove());
+  
+  const config = {
+    success: {
+      icono: '<i class="fas fa-check-circle"></i>',
+      defaultMsg: 'Operación completada exitosamente'
+    },
+    error: {
+      icono: '<i class="fas fa-exclamation-triangle"></i>',
+      defaultMsg: 'Error al procesar la solicitud'
+    },
+    warning: {
+      icono: '<i class="fas fa-exclamation-triangle"></i>',
+      defaultMsg: 'Verifica la información'
+    },
+    info: {
+      icono: '<i class="fas fa-info-circle"></i>',
+      defaultMsg: 'Información actualizada'
+    }
+  };
+  
+  const cfg = config[tipo] || config.info;
+  const texto = mensaje || cfg.defaultMsg;
+  
+  const notificacion = document.createElement('div');
+  notificacion.className = `carrito-notificacion ${tipo}`;
+  notificacion.innerHTML = `${cfg.icono}<span>${texto}</span>`;
+  
+  document.body.appendChild(notificacion);
+  
+  setTimeout(() => {
+    if (notificacion && notificacion.parentNode) {
+      notificacion.style.animation = 'slideOutRight 0.3s ease';
+      setTimeout(() => {
+        if (notificacion && notificacion.parentNode) {
+          notificacion.remove();
+        }
+      }, 300);
+    }
+  }, 3000);
+}
+
+function mostrarNotificacionCargaAdmin(mensaje = 'Procesando...') {
+  const notificacion = document.createElement('div');
+  notificacion.className = 'carrito-notificacion info';
+  notificacion.innerHTML = `<i class="fas fa-spinner fa-pulse"></i><span>${mensaje}</span>`;
+  document.body.appendChild(notificacion);
+  return notificacion;
+}
+
+function ocultarNotificacionCargaAdmin(notificacion) {
+  if (notificacion && notificacion.parentNode) {
+    notificacion.style.animation = 'slideOutRight 0.3s ease';
+    setTimeout(() => notificacion.remove(), 300);
+  }
+}
+
+// Modal de confirmación personalizado (reemplaza el confirm nativo)
+function mostrarModalConfirmacion(opciones) {
+  return new Promise((resolve) => {
+    const modalHTML = `
+      <div id="modalConfirmacionPersonalizado" class="modal-confirmacion-personalizado" style="display: flex;">
+        <div class="modal-contenido-personalizado">
+          <div class="modal-header-personalizado ${opciones.tipo || 'warning'}">
+            <i class="fas ${opciones.icono || 'fa-question-circle'}"></i>
+            <h3>${opciones.titulo || 'Confirmar'}</h3>
+          </div>
+          <div class="modal-body-personalizado">
+            <p>${opciones.mensaje || '¿Estás seguro de realizar esta acción?'}</p>
+          </div>
+          <div class="modal-footer-personalizado">
+            <button class="btn-cancelar" id="btnCancelarModal">${opciones.textoCancelar || 'Cancelar'}</button>
+            <button class="btn-confirmar ${opciones.tipo || 'warning'}" id="btnConfirmarModal">${opciones.textoConfirmar || 'Confirmar'}</button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    const modal = document.getElementById('modalConfirmacionPersonalizado');
+    const btnConfirmar = document.getElementById('btnConfirmarModal');
+    const btnCancelar = document.getElementById('btnCancelarModal');
+    
+    const cerrar = (resultado) => {
+      modal.style.animation = 'fadeOut 0.3s ease';
+      setTimeout(() => {
+        modal.remove();
+        resolve(resultado);
+      }, 300);
+    };
+    
+    btnConfirmar.onclick = () => cerrar(true);
+    btnCancelar.onclick = () => cerrar(false);
+    modal.onclick = (e) => {
+      if (e.target === modal) cerrar(false);
+    };
+  });
+}
 
 // Exportar funciones para uso global
 window.cerrarModal = cerrarModal;

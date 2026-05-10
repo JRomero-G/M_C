@@ -1019,3 +1019,148 @@ select:focus, input:focus {
   margin-top: 5px;
   padding-top: 5px;
 }
+
+/* ============================================
+     MODAL DE CONFIRMACIÓN PERSONALIZADO
+   ============================================ */
+
+.modal-confirmacion-personalizado {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-contenido-personalizado {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header-personalizado {
+    padding: 20px;
+    text-align: center;
+    color: white;
+}
+
+.modal-header-personalizado.warning {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+
+.modal-header-personalizado.success {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.modal-header-personalizado.danger {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.modal-header-personalizado.info {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.modal-header-personalizado i {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.modal-header-personalizado h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.modal-body-personalizado {
+    padding: 25px;
+    text-align: center;
+    color: #2c3e50;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.modal-footer-personalizado {
+    padding: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    border-top: 1px solid #e9ecef;
+}
+
+.modal-footer-personalizado button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modal-footer-personalizado .btn-cancelar {
+    background: #e9ecef;
+    color: #6c757d;
+}
+
+.modal-footer-personalizado .btn-cancelar:hover {
+    background: #dee2e6;
+}
+
+.modal-footer-personalizado .btn-confirmar {
+    color: white;
+}
+
+.modal-footer-personalizado .btn-confirmar.warning {
+    background: #f39c12;
+}
+
+.modal-footer-personalizado .btn-confirmar.warning:hover {
+    background: #e67e22;
+}
+
+.modal-footer-personalizado .btn-confirmar.success {
+    background: #2ecc71;
+}
+
+.modal-footer-personalizado .btn-confirmar.success:hover {
+    background: #27ae60;
+}
+
+.modal-footer-personalizado .btn-confirmar.danger {
+    background: #e74c3c;
+}
+
+.modal-footer-personalizado .btn-confirmar.danger:hover {
+    background: #c0392b;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}

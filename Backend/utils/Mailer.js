@@ -1,6 +1,6 @@
 // Funciones para enviar correos electrónicos, 
 // como el correo de restablecimiento de contraseña
-
+require("dotenv").config();
 const nodemailer = require('nodemailer');
 
 // Configuración del transporte de correo electrónico;

@@ -3,6 +3,8 @@ const Pedido = require("../models/Pedidos");
 const PedidoDetalle = require("../models/Pedido-detalle");
 const Producto = require("../models/Producto");
 const { obtenerProximoIdSecuencial } = require("./Contador-controller");
+const { enviarConfirmacionPedido } = require('../utils/Mailer');
+
 
 /**Crear pedido público (desde catálogo → carrito → facturación)*/
 const crearPedidoPublico = async (req, res) => {
@@ -222,6 +224,18 @@ const crearPedidoPublico = async (req, res) => {
     await session.commitTransaction();
     console.log("🎉 Transacción completada exitosamente");
 
+    // Enviar correo de confirmación (fuera de la transacción)
+    try {
+        await enviarConfirmacionPedido(
+            cliente.correo,
+            pedidoGuardado,
+            itemsProcesados
+        );
+        console.log(`📧 Correo de confirmación enviado a ${cliente.correo}`);
+    } catch (emailError) {
+        // El error de correo NO cancela el pedido
+        console.error("⚠️ Error al enviar correo de confirmación:", emailError.message);
+    }
     // ================================
     // PREPARAR RESPUESTA
     // ================================

@@ -5,5 +5,7 @@ Backend/node_modules/
 # Ignore test
 Backend/test/
 # Ignore Prueba admin
-Backend/adminRoutes.js
+Backend/adminRoutes.js 
+
+Backend/utils/migracion_model_productos.js
 
